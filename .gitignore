@@ -1,0 +1,11 @@
+*
+
+!.gitignore
+!*.cpp
+!*.h
+!*.vcxproj
+!*.sln
+!LICENSE
+!README.md
+
+!*/
