@@ -49,6 +49,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\bin\Release-windows-x86_64\Silenda\</OutDir>
     <IntDir>..\bin-int\Release-windows-x86_64\Silenda\</IntDir>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -81,7 +82,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\client\render\fragment.cpp" />
+    <ClCompile Include="src\client\render\mesh\mesh.cpp" />
+    <ClCompile Include="src\client\render\rbuffer.cpp" />
+    <ClCompile Include="src\client\render\renderer.cpp" />
     <ClCompile Include="src\cl_main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\client\render\fragcolor.h" />
+    <ClInclude Include="src\client\render\fragment.h" />
+    <ClInclude Include="src\client\render\fragpos.h" />
+    <ClInclude Include="src\client\render\framebuffer.h" />
+    <ClInclude Include="src\client\render\mesh\mesh.h" />
+    <ClInclude Include="src\client\render\mesh\meshpoint.h" />
+    <ClInclude Include="src\client\render\rbuffer.h" />
+    <ClInclude Include="src\client\render\renderable.h" />
+    <ClInclude Include="src\client\render\renderer.h" />
+    <ClInclude Include="src\client\render\types.h" />
+    <ClInclude Include="src\client\utils\row_major.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
