@@ -15,7 +15,7 @@ namespace render
 		inline void reset() {
 			for (unsigned int i = 0; i < m_Size; i++)
 			{
-				m_Buffer[i].visual = ' ';
+				m_Buffer[i].visual = L' ';
 				m_Buffer[i].color = 0xA;
 			}
 		};

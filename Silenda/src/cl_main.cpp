@@ -32,17 +32,15 @@ private:
 class SecBoard : public Renderable
 {
 public:
-	SecBoard() { mesh = new MeshFrame(5, 5, { 5, 4, 0 }); };
+	SecBoard() { mesh = new MeshFrame(16, 5, { 10, 4, 0 }); };
 	~SecBoard() { delete mesh; };
 
 	inline void DebugDrawPoint(short x, short y) { mesh->DrawPoint(COLOR_PINK, COLOR_BLACK, { x, y, 0}); }
 
 	MeshFrame OnRender()
 	{
-		DebugDrawPoint(0, 0);
-		DebugDrawPoint(0, 4);
-		DebugDrawPoint(4, 4);
-		DebugDrawPoint(4, 0);
+		mesh->DrawRect(15, 2, COLOR_PINK, COLOR_BLACK, { 0, 0, 0 });
+		mesh->DrawText(L"Hello this is a giant line of txt that won't be able to be rendered!", COLOR_PINK, COLOR_BLACK, { 2, 1, 0 });
 
 		return *mesh;
 	}
@@ -61,6 +59,6 @@ int main(int argc, char** argv)
 	rPtr->draw(t1);
 	rPtr->draw(l2);
 	rPtr->flush();
-
+		 
 	return 0;
 }

@@ -1,5 +1,7 @@
 ﻿#include <iostream>
 #include <Windows.h>
+#include <io.h>
+#include <fcntl.h>
 
 #include "renderer.h"
 
@@ -8,6 +10,11 @@
 namespace render
 {
 	Renderer* Renderer::m_Instance = nullptr;
+
+	Renderer::Renderer()
+	{
+		_setmode(_fileno(stdout), _O_U16TEXT);
+	}
 
 	Renderer* Renderer::GetInstance()
 	{
@@ -49,18 +56,18 @@ namespace render
 			for (ushort x = 0; x < meshLength; x++)
 			{
 				uint meshIndex = row_major(x, y, meshLength);
-				uint bufferIndex = row_major(meshPos.xpos + x, meshPos.ypos + y, m_FrameLength);
+				uint bufferIndex = row_major(meshPos.x + x, meshPos.y + y, m_FrameLength);
 
 				if (bufferIndex >= m_FutureBuffer.size() || bufferIndex >= m_DepthBuffer.size())
 					continue;
 
 				// Depth buffer check
-				if (mesh[meshIndex]->pos.zpos < *m_DepthBuffer[bufferIndex])
+				if (mesh[meshIndex]->pos.z < *m_DepthBuffer[bufferIndex])
 				{
 					*m_FutureBuffer[bufferIndex] = mesh[meshIndex]->frag;
 
 					// Set new depth buffer num at pos
-					*m_DepthBuffer[bufferIndex] = mesh[meshIndex]->pos.zpos;
+					*m_DepthBuffer[bufferIndex] = mesh[meshIndex]->pos.z;
 				}
 			}
 		}
@@ -84,11 +91,11 @@ namespace render
 						continue;
 
 					setCursorPos(x, y);
-					std::cout << *m_FutureBuffer[row_major(x, y, m_FrameLength)];
+					std::wcout << *m_FutureBuffer[row_major(x, y, m_FrameLength)];
 				}
 			}
 
-			std::cout.flush();
+			std::wcout.flush();
 		}
 
 		m_CurrentBuffer = m_FutureBuffer;
@@ -98,7 +105,7 @@ namespace render
 	void Renderer::setCursorPos(const ushort& x, const ushort& y)
 	{
 		static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-		std::cout.flush();
+		std::wcout.flush();
 		COORD coord = { (SHORT)x, (SHORT)y };
 		SetConsoleCursorPosition(hOut, coord);
 	}

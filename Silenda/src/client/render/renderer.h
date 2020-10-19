@@ -26,7 +26,7 @@ namespace render
 		ushort m_FrameLength = 0;
 		ushort m_FrameWidth = 0;
 	private:
-		Renderer() {};
+		Renderer();
 		static Renderer* m_Instance;
 	};
 }

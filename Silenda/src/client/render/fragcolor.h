@@ -1,5 +1,7 @@
 #pragma once
 
+#include "types.h"
+
 namespace render
 {
 	enum FragColor
@@ -21,5 +23,14 @@ namespace render
 		COLOR_YELLOW = 0xE,
 		COLOR_WHITE = 0xF,
 		COUNT
+	};
+
+	struct ColorScheme
+	{
+	public:
+		ColorScheme(const FragColor& txt, const FragColor& bg) : scheme_code(FragColor::COUNT * bg + txt) {};
+		ColorScheme(const FragColor code) : scheme_code(code) {};
+	public:
+		ubyte scheme_code;
 	};
 }

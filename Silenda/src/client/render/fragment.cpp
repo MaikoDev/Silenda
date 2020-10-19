@@ -4,7 +4,7 @@
 
 namespace render
 {
-	std::ostream& operator<<(std::ostream& os, const Fragment& frag)
+	std::wostream& operator<<(std::wostream& os, const Fragment& frag)
 	{
 		HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 		WORD oldColorAttribs;
