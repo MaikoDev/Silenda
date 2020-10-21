@@ -11,7 +11,7 @@ namespace render
 	class MeshFrame : public rBuffer<MeshPoint>
 	{
 	public:
-		MeshFrame(const ushort length, const ushort width, const FragPos globalPos);
+		MeshFrame(const ushort& length, const ushort& width, const FragPos globalPos = { 0, 0, 0 });
 		void reset();
 
 		void DrawPoint(const FragColor point, const FragColor bg, const FragPos& pos);
@@ -19,6 +19,8 @@ namespace render
 		void DrawLine(const FragPos& p1, const FragPos& p2, const FragColor point, const FragColor bg);
 		void DrawRect(const short& length, const short& width, const FragColor point, const FragColor bg, const FragPos& pos);
 		void DrawText(const std::wstring& txt, const FragColor point, const FragColor bg, const FragPos& pos);
+
+		inline const void SetGlobalPos(const FragPos& pos) { m_Pos = pos; };
 		
 		inline const ushort& GetLength() const& { return m_Length; };
 		inline const ushort& GetWidth() const& { return m_Width; };

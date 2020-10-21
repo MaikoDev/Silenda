@@ -2,7 +2,7 @@
 
 namespace render
 {
-	MeshFrame::MeshFrame(const ushort length, const ushort width, const FragPos globalPos) : rBuffer(length * width), m_Length(length), m_Width(width), m_Pos(globalPos)
+	MeshFrame::MeshFrame(const ushort& length, const ushort& width, const FragPos globalPos) : rBuffer(length * width), m_Length(length), m_Width(width), m_Pos(globalPos)
 	{
 		for (ushort y = 0; y < m_Width; y++)
 		{

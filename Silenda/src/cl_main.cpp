@@ -4,6 +4,10 @@
 #include <fcntl.h>
 
 #include "client\render\renderer.h"
+#include "cryptopp\osrng.h"
+#include "cryptopp\rsa.h"
+#include "cryptopp\filters.h"
+#include "cryptopp\gzip.h"
 
 using namespace render;
 
@@ -50,7 +54,7 @@ private:
 
 int main(int argc, char** argv)
 {
-	Board* t1 = new Board();
+	/*Board* t1 = new Board();
 	SecBoard* l2 = new SecBoard();
 
 	Renderer* rPtr = Renderer::GetInstance();
@@ -58,7 +62,41 @@ int main(int argc, char** argv)
 	rPtr->init(80, 20);
 	rPtr->draw(t1);
 	rPtr->draw(l2);
-	rPtr->flush();
+	rPtr->flush();*/
+
+	CryptoPP::AutoSeededRandomPool rng;
+
+	CryptoPP::InvertibleRSAFunction params;
+	params.GenerateRandomWithKeySize(rng, 4096);
+
+	CryptoPP::RSA::PrivateKey privateKey(params);
+	CryptoPP::RSA::PublicKey publicKey(params);
+
+	std::string cipher, compressed, decompressed, recovered;
+
+	CryptoPP::RSAES_OAEP_SHA_Encryptor e(publicKey);
+
+	CryptoPP::StringSource ss1("Hello Secret World!", true,
+		new CryptoPP::PK_EncryptorFilter(rng, e,
+			new CryptoPP::StringSink(cipher)
+		) // PK_EncryptorFilter
+	); // StringSource
+
+	CryptoPP::Gzip zipper(new CryptoPP::StringSink(compressed));
+	zipper.Put((CryptoPP::byte*) cipher.c_str(), cipher.size());
+	zipper.MessageEnd();
+
+	CryptoPP::Gunzip unzipper(new CryptoPP::StringSink(decompressed));
+	unzipper.Put((unsigned char*) compressed.data(), compressed.size());
+	unzipper.MessageEnd();
+
+	CryptoPP::RSAES_OAEP_SHA_Decryptor d(privateKey);
+
+	CryptoPP::StringSource ss2(cipher, true,
+		new CryptoPP::PK_DecryptorFilter(rng, d,
+			new CryptoPP::StringSink(recovered)
+		) // PK_DecryptorFilter
+	); // StringSource
 		 
 	return 0;
 }
