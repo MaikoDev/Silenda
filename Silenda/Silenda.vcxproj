@@ -88,8 +88,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\client\console\msghandler.cpp" />
     <ClCompile Include="src\client\console\mtc.cpp" />
     <ClCompile Include="src\client\page\base.cpp" />
+    <ClCompile Include="src\client\page\chat.cpp" />
     <ClCompile Include="src\client\page\login.cpp" />
     <ClCompile Include="src\client\render\fragment.cpp" />
     <ClCompile Include="src\client\render\mesh\mesh.cpp" />
@@ -98,8 +100,10 @@
     <ClCompile Include="src\cl_main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\client\console\msghandler.h" />
     <ClInclude Include="src\client\console\mtc.h" />
     <ClInclude Include="src\client\page\base.h" />
+    <ClInclude Include="src\client\page\chat.h" />
     <ClInclude Include="src\client\page\login.h" />
     <ClInclude Include="src\client\render\fragcolor.h" />
     <ClInclude Include="src\client\render\fragment.h" />

@@ -15,8 +15,11 @@ namespace render
 		void init(const uint& length, const uint& width);
 		bool draw(Renderable* obj);
 		void flush();
+
+		void SetWindowSize(const int& width, const int& height);
 	private:
 		void setCursorPos(const ushort& x, const ushort& y);
+		void resetDepth();
 	private:
 		FragBuffer m_CurrentBuffer;
 		FragBuffer m_FutureBuffer;

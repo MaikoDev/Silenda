@@ -6,11 +6,11 @@
 
 namespace Silenda
 {
-	class LoginPage : public Page
+	class ChatPage : public Page
 	{
 	public:
-		LoginPage();
-		~LoginPage();
+		ChatPage();
+		~ChatPage();
 
 		// Active thread of execution of page
 		void update(IObservable* src, const unsigned char controller = 0) override;

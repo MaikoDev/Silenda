@@ -71,27 +71,27 @@ namespace render
 		{
 			// Construct corners
 			DrawFrag({ L'\u250C', point, bg }, pos);
-			DrawFrag({ L'\u2510', point, bg }, { pos.x + length, pos.y, pos.z });
-			DrawFrag({ L'\u2518', point, bg }, { pos.x + length, pos.y + width, pos.z });
-			DrawFrag({ L'\u2514', point, bg }, { pos.x, pos.y + width, pos.z });
+			DrawFrag({ L'\u2510', point, bg }, { (pos.x + length) - 1, pos.y, pos.z });
+			DrawFrag({ L'\u2518', point, bg }, { (pos.x + length) - 1, (pos.y + width) - 1, pos.z });
+			DrawFrag({ L'\u2514', point, bg }, { pos.x, (pos.y + width) - 1, pos.z });
 
 			// Constuct top & bottom
-			for (short i = pos.x + 1; i < length; i++)
+			for (short i = pos.x + 1; i < length - 1; i++)
 			{
 				DrawFrag({ L'\u2500', point, bg }, { i, 0, 0 });
-				DrawFrag({ L'\u2500', point, bg }, { i, width, 0 });
+				DrawFrag({ L'\u2500', point, bg }, { i, width - 1, 0 });
 			}
 
 			// Construct left & right
-			for (short i = pos.y + 1; i < width; i++)
+			for (short i = pos.y + 1; i < width - 1; i++)
 			{
 				DrawFrag({ L'\u2502', point, bg }, { 0, i, 0 });
-				DrawFrag({ L'\u2502', point, bg }, { length, i, 0 });
+				DrawFrag({ L'\u2502', point, bg }, { length - 1, i, 0 });
 			}
 		}
 	}
 
-	void MeshFrame::DrawText(const std::wstring& txt, const FragColor point, const FragColor bg, const FragPos& pos)
+	void MeshFrame::DrawUText(const std::wstring& txt, const FragColor point, const FragColor bg, const FragPos& pos)
 	{
 		if (txt.size() < SHRT_MAX)
 		{

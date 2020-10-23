@@ -5,10 +5,13 @@
 
 #include "..\render\renderable.h"
 #include "..\render\mesh\mesh.h"
+#include "..\console\msghandler.h"
 
 namespace Silenda
 {
-	class Page : public render::Renderable
+	extern std::wstring DisplayName;
+
+	class Page : public render::Renderable, public IObserver
 	{
 	public:
 		// Base Page Class
@@ -17,8 +20,8 @@ namespace Silenda
 		Page(const unsigned short length, const unsigned short width);
 		~Page();
 
-		// main thread execution of current page
-		virtual void active() = 0;
+		void load();
+		void unload();
 
 		// LinkPage
 		// @param1 unique string identifier
@@ -33,5 +36,8 @@ namespace Silenda
 	protected:
 		render::MeshFrame* m_Mesh;
 		std::unordered_map<std::string, Page*> m_ConnectedPages;
+		bool m_IsActivePage = false;
 	};
+
+	extern Page* LoadedPage;
 }

@@ -3,7 +3,11 @@
 #include <io.h>
 #include <fcntl.h>
 
+#include "client\page\chat.h"
+#include "client\page\login.h"
+#include "client\console\msghandler.h"
 #include "client\render\renderer.h"
+#include "client\console\mtc.h"
 #include "cryptopp\osrng.h"
 #include "cryptopp\rsa.h"
 #include "cryptopp\filters.h"
@@ -33,7 +37,7 @@ private:
 	MeshFrame* test;
 };
 
-class SecBoard : public Renderable
+class SecBoard : public Renderable, public IObserver
 {
 public:
 	SecBoard() { mesh = new MeshFrame(16, 5, { 10, 4, 0 }); };
@@ -41,30 +45,52 @@ public:
 
 	inline void DebugDrawPoint(short x, short y) { mesh->DrawPoint(COLOR_PINK, COLOR_BLACK, { x, y, 0}); }
 
+	void update(IObservable* src, const unsigned char controller = 0) override
+	{
+		if (controller == 0 || controller == 1)
+		{
+			Silenda::MTConsole* consolePtr = (Silenda::MTConsole*)src;
+			inputString = consolePtr->GetMsgBuffer();
+		}
+	}
+
 	MeshFrame OnRender()
 	{
+		mesh->reset();
 		mesh->DrawRect(15, 2, COLOR_PINK, COLOR_BLACK, { 0, 0, 0 });
-		mesh->DrawText(L"Hello this is a giant line of txt that won't be able to be rendered!", COLOR_PINK, COLOR_BLACK, { 2, 1, 0 });
+		mesh->DrawUText(inputString, COLOR_PINK, COLOR_BLACK, { 2, 1, 0 });
 
 		return *mesh;
 	}
 private:
 	MeshFrame* mesh;
+	std::mutex mtx;
+	std::wstring inputString;
 };
 
 int main(int argc, char** argv)
 {
-	/*Board* t1 = new Board();
-	SecBoard* l2 = new SecBoard();
+	Silenda::MTConsole* consolePtr = Silenda::MTConsole::GetInstance();
+	Silenda::MsgHandler* handlerPtr = Silenda::MsgHandler::GetInstance();
 
 	Renderer* rPtr = Renderer::GetInstance();
 
-	rPtr->init(80, 20);
-	rPtr->draw(t1);
-	rPtr->draw(l2);
-	rPtr->flush();*/
+	Silenda::Page* login = new Silenda::LoginPage();
+	Silenda::Page* chat = new Silenda::ChatPage();
 
-	CryptoPP::AutoSeededRandomPool rng;
+	login->LinkPage("SilendaChat", chat);
+
+	login->load();
+
+	rPtr->init(100, 30);
+
+	while (true)
+	{
+		rPtr->draw(Silenda::LoadedPage);
+		rPtr->flush();
+	}
+
+	/*CryptoPP::AutoSeededRandomPool rng;
 
 	CryptoPP::InvertibleRSAFunction params;
 	params.GenerateRandomWithKeySize(rng, 4096);
@@ -96,7 +122,7 @@ int main(int argc, char** argv)
 		new CryptoPP::PK_DecryptorFilter(rng, d,
 			new CryptoPP::StringSink(recovered)
 		) // PK_DecryptorFilter
-	); // StringSource
+	); // StringSource*/
 		 
 	return 0;
 }

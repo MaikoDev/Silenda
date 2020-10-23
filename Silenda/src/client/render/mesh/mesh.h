@@ -18,7 +18,7 @@ namespace render
 		// Restricted to horizontal and vertical lines, cannot draw diagonal lines.
 		void DrawLine(const FragPos& p1, const FragPos& p2, const FragColor point, const FragColor bg);
 		void DrawRect(const short& length, const short& width, const FragColor point, const FragColor bg, const FragPos& pos);
-		void DrawText(const std::wstring& txt, const FragColor point, const FragColor bg, const FragPos& pos);
+		void DrawUText(const std::wstring& txt, const FragColor point, const FragColor bg, const FragPos& pos);
 
 		inline const void SetGlobalPos(const FragPos& pos) { m_Pos = pos; };
 		

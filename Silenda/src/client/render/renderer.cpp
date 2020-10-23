@@ -13,7 +13,23 @@ namespace render
 
 	Renderer::Renderer()
 	{
+		// Setup unicode
 		_setmode(_fileno(stdout), _O_U16TEXT);
+
+		SetConsoleTitle(LPCSTR("Silenda"));
+
+		HWND hwnd = GetConsoleWindow();
+		DWORD style = GetWindowLong(hwnd, GWL_STYLE);
+
+		style &= ~WS_MAXIMIZEBOX;
+		style &= ~WS_MINIMIZEBOX;
+		style &= ~WS_HSCROLL;
+		style &= ~WS_VSCROLL;
+		style &= ~WS_SYSMENU;
+
+		ShowScrollBar(hwnd, SB_BOTH, FALSE);
+		SetWindowLong(hwnd, GWL_STYLE, style);
+		SetWindowPos(hwnd, NULL, 0, 0, 20, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 	}
 
 	Renderer* Renderer::GetInstance()
@@ -87,7 +103,7 @@ namespace render
 			{
 				for (ushort x = 0; x < m_FrameLength; x++)
 				{
-					if (m_FutureBuffer[row_major(x, y, m_FrameLength)] == m_CurrentBuffer[row_major(x, y, m_FrameLength)])
+					if (*m_FutureBuffer[row_major(x, y, m_FrameLength)] == *m_CurrentBuffer[row_major(x, y, m_FrameLength)])
 						continue;
 
 					setCursorPos(x, y);
@@ -99,7 +115,17 @@ namespace render
 		}
 
 		m_CurrentBuffer = m_FutureBuffer;
+		resetDepth();
 		return;
+	}
+
+	void Renderer::SetWindowSize(const int& width, const int& height)
+	{
+		HWND hwnd = GetConsoleWindow();
+		RECT rct = { NULL };
+
+		GetWindowRect(hwnd, &rct);
+		MoveWindow(hwnd, rct.left, rct.top, width * 10, height * 21, TRUE);
 	}
 
 	void Renderer::setCursorPos(const ushort& x, const ushort& y)
@@ -108,5 +134,10 @@ namespace render
 		std::wcout.flush();
 		COORD coord = { (SHORT)x, (SHORT)y };
 		SetConsoleCursorPosition(hOut, coord);
+	}
+
+	void Renderer::resetDepth()
+	{
+		m_DepthBuffer = std::move(rBuffer<short>(32767, m_FrameLength * m_FrameWidth));
 	}
 }
