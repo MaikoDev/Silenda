@@ -37,6 +37,7 @@ namespace Silenda
 				m_MsgRecord.pop_front();
 				
 			m_MsgRecord.push_back(m_MsgBuffer); m_MsgBuffer = L""; notify(1);
+			notify();
 		};
 
 		void OnThreadTick();

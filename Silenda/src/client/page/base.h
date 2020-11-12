@@ -23,6 +23,7 @@ namespace Silenda
 
 		void load();
 		void unload();
+		virtual void initPostLoad() {};
 
 		// LinkPage
 		// @param1 unique string identifier

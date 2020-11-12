@@ -15,59 +15,6 @@
 
 using namespace render;
 
-class Board : public Renderable
-{
-public:
-	Board() { test = new MeshFrame(5, 5, {0, 0, 0}); };
-	~Board() { delete test; };
-
-	inline void DebugDrawPoint(short x, short y) { test->DrawPoint(COLOR_GREEN, COLOR_BLACK, { x, y, 0 });
-	}
-
-	MeshFrame OnRender()
-	{
-		DebugDrawPoint(0, 0);
-		DebugDrawPoint(0, 4);
-		DebugDrawPoint(4, 4);
-		DebugDrawPoint(4, 0);
-
-		return *test;
-	}
-private:
-	MeshFrame* test;
-};
-
-class SecBoard : public Renderable, public IObserver
-{
-public:
-	SecBoard() { mesh = new MeshFrame(16, 5, { 10, 4, 0 }); };
-	~SecBoard() { delete mesh; };
-
-	inline void DebugDrawPoint(short x, short y) { mesh->DrawPoint(COLOR_PINK, COLOR_BLACK, { x, y, 0}); }
-
-	void update(IObservable* src, const unsigned char controller = 0) override
-	{
-		if (controller == 0 || controller == 1)
-		{
-			Silenda::MTConsole* consolePtr = (Silenda::MTConsole*)src;
-			inputString = consolePtr->GetMsgBuffer();
-		}
-	}
-
-	MeshFrame OnRender()
-	{
-		mesh->reset();
-		mesh->DrawRect(15, 2, COLOR_PINK, COLOR_BLACK, { 0, 0, 0 });
-		mesh->DrawUText(inputString, COLOR_PINK, COLOR_BLACK, { 2, 1, 0 });
-
-		return *mesh;
-	}
-private:
-	MeshFrame* mesh;
-	std::mutex mtx;
-	std::wstring inputString;
-};
-
 int main(int argc, char** argv)
 {
 	Silenda::MTConsole* consolePtr = Silenda::MTConsole::GetInstance();

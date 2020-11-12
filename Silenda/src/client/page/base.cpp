@@ -21,7 +21,10 @@ namespace Silenda
 	void Page::load() 
 	{ 
 		if (LoadedPage != this)
+		{
 			LoadedPage = this;
+			initPostLoad();
+		}
 	}
 
 	void Page::unload() 

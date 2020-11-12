@@ -55,6 +55,11 @@ namespace Silenda
 		m_Mtx.unlock();
 	}
 
+	void LoginPage::initPostLoad()
+	{
+		MTConsole::GetInstance()->SetMaxBufferSize(14);
+	}
+
 	render::MeshFrame LoginPage::OnRender() // executed on the renderer call of page object draw
 	{
 		m_Mtx.lock();

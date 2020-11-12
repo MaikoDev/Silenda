@@ -62,14 +62,14 @@ namespace Silenda
 		{
 			MTConsole* console = (MTConsole*)src;
 			
-			m_LastHandle = parse(console->GetMsgRecord()[0]);
+			m_LastHandle = parse(console->GetMsgRecord().back());
 			if (m_LastHandle.size() == 1)
 			{
 				if (m_LastHandle.front().MessageType == MSG_TXT) // notify observers who only care for txt messages
 					notify(3);
+				else
+					notify(4); // notify observers who only care for command messages
 			}
-
-			notify(4); // notify observers who only care for command messages
 		}
 	}
 

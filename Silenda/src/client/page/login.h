@@ -17,6 +17,7 @@ namespace Silenda
 		void update(IObservable* src, const unsigned char controller = 0) override;
 
 		render::MeshFrame OnRender() override;
+		void initPostLoad() override;
 	private:
 		short m_FormLength = 33, m_FormWidth = 5;
 		render::FragPos m_FormPos = { (m_Mesh->GetLength() / 2) - (m_FormLength / 2), (m_Mesh->GetWidth() / 2) - (m_FormWidth / 2), 0 };

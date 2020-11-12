@@ -2,7 +2,7 @@
 
 namespace Silenda
 {
-	ChatPage::ChatPage() : Page(97, 28)
+	ChatPage::ChatPage() : Page(117, 29)
 	{
 		MTConsole::GetInstance()->attach(this);
 		MsgHandler::GetInstance()->attach(this);
@@ -17,8 +17,36 @@ namespace Silenda
 	void ChatPage::update(IObservable* src, const unsigned char controller)
 	{
 		m_Mtx.lock();
+		if (LoadedPage == this)
+		{
+			if (controller == 0) // console
+			{
+				m_InputText = MTConsole::GetInstance()->GetMsgBuffer();
+			}
+			else if (controller == 3) // msghandler <- messages from handler are only TXT on this controller channel
+			{
 
+			}
+			else if (controller == 4) // msghandler <- messages from handler are only commands on this controller channel
+			{
+				std::queue<MsgHandle> commands = MsgHandler::GetInstance()->CopyLastHandle();
+
+				while (!commands.empty())
+				{
+					if (commands.front().Message.Key == L"exit")
+						BaseRunningState = false;
+					// exit program execution
+
+					commands.pop();
+				}
+			}
+		}
 		m_Mtx.unlock();
+	}
+
+	void ChatPage::initPostLoad()
+	{
+		MTConsole::GetInstance()->SetMaxBufferSize(88);
 	}
 
 	render::MeshFrame ChatPage::OnRender()
@@ -41,7 +69,10 @@ namespace Silenda
 
 		////////////////////////////////////////////////////////////////////////
 
+		m_Mesh->DrawUText(m_InputText, render::COLOR_DARK_GREEN, render::COLOR_BLACK, { m_FormPos.x + 4, m_FormWidth - 1, 0 });
 
+		if (m_Timer.elapsed_now<int, std::ratio<1, 1>>() % 2 != 0)
+			m_Mesh->DrawUText(L"|", render::COLOR_DARK_GREEN, render::COLOR_BLACK, { (m_FormPos.x + 4) + (short)m_InputText.size(), m_FormWidth - 1, 0 });
 
 		m_Mtx.unlock();
 
