@@ -7,7 +7,7 @@ namespace render
 		for (ushort y = 0; y < m_Width; y++)
 		{
 			for (ushort x = 0; x < m_Length; x++)
-				m_Buffer[row_major(x, y, m_Length)].pos = { (short)x, (short)y, 0 }; // setup coordinates of fragments
+				m_Buffer[row_major(x, y, m_Length)].pos = { (short)x, (short)y, BACKGROUND_DEPTH }; // setup coordinates of fragments
 		}
 	}
 
@@ -23,7 +23,7 @@ namespace render
 				uint i = row_major(x, y, m_Length);
 
 				m_Buffer[i].frag = fragInitial;
-				m_Buffer[i].pos = { (short)x, (short)y, 0 };
+				m_Buffer[i].pos = { (short)x, (short)y, BACKGROUND_DEPTH };
 			}
 		}
 	};
@@ -65,10 +65,22 @@ namespace render
 		}
 	}
 
-	void MeshFrame::DrawRect(const short& length, const short& width, const FragColor point, const FragColor bg, const FragPos& pos, int lineRenderFlags)
+	void MeshFrame::DrawRect(const short& length, const short& width, const FragColor point, const FragColor bg, const FragPos& pos, int lineRenderFlags, bool shouldFill)
 	{
 		if (length != 0 && width != 0)
 		{
+			//Fill MeshPoints within area with position of rect
+			if (shouldFill)
+			{
+				short widthLimit = width + pos.y - 1, lengthLimit = length + pos.x - 1;
+
+				for (short y = pos.y + 1; y < widthLimit; y++)
+				{
+					for (short x = pos.x + 1; x < lengthLimit; x++)
+						m_Buffer[row_major(x, y, m_Length)].pos = { (short)x, (short)y, BACKGROUND_DEPTH + 6 };
+				}
+			}
+
 			//Corner Positions
 			FragPos CornerPos[4] = { pos, { (pos.x + length) - 1, pos.y, pos.z }, { pos.x, (pos.y + width) - 1, pos.z }, { (pos.x + length) - 1, (pos.y + width) - 1, pos.z } };
 
@@ -109,16 +121,16 @@ namespace render
 			wchar_t lineChar = 9472;
 			for (short i = 0, p = pos.x + 1; i < length - 2; i++, p++)
 			{
-				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & TOP_SHADOWED) == TOP_SHADOWED) * 80)), point, bg }, { p, pos.y, 0 });
-				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & BOTTOM_SHADOWED) == BOTTOM_SHADOWED) * 80)), point, bg }, { p, pos.y + (width - 1), 0 });
+				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & TOP_SHADOWED) == TOP_SHADOWED) * 80)), point, bg }, { p, pos.y, pos.z });
+				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & BOTTOM_SHADOWED) == BOTTOM_SHADOWED) * 80)), point, bg }, { p, pos.y + (width - 1), pos.z });
 			}
 
 			// Construct left & right
 			lineChar = 9474;
 			for (short i = 0, p = pos.y + 1; i < width - 2; i++, p++)
 			{
-				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & LEFT_SHADOWED) == LEFT_SHADOWED) * 79)), point, bg }, { pos.x, p, 0 });
-				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & RIGHT_SHADOWED) == RIGHT_SHADOWED) * 79)), point, bg }, { pos.x + (length - 1), p, 0 });
+				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & LEFT_SHADOWED) == LEFT_SHADOWED) * 79)), point, bg }, { pos.x, p, pos.z });
+				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & RIGHT_SHADOWED) == RIGHT_SHADOWED) * 79)), point, bg }, { pos.x + (length - 1), p, pos.z });
 			}
 		}
 	}

@@ -20,12 +20,9 @@ namespace render
 	private:
 		void setCursorPos(const ushort& x, const ushort& y);
 		void showCursor(const bool& showFlag);
-		void resetDepth();
 	private:
 		FragBuffer m_CurrentBuffer;
 		FragBuffer m_FutureBuffer;
-
-		rBuffer<short> m_DepthBuffer;
 
 		ushort m_FrameLength = 0;
 		ushort m_FrameWidth = 0;

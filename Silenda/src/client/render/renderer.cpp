@@ -49,7 +49,7 @@ namespace render
 		m_CurrentBuffer = std::move(FragBuffer(area));
 
 		// Setup depth buffer
-		m_DepthBuffer = std::move(rBuffer<short>(32767, area));
+		//m_DepthBuffer = std::move(rBuffer<short>(32767, area));
 
 		// Reset console window to size
 		SetWindowSize(length, width);
@@ -58,7 +58,7 @@ namespace render
 	bool Renderer::draw(Renderable* obj)
 	{
 		// Check if any of the buffers are empty/uninitialize before starting
-		if (m_CurrentBuffer.empty() || m_FutureBuffer.empty() || m_DepthBuffer.empty())
+		if (m_CurrentBuffer.empty() || m_FutureBuffer.empty())
 			return false;
 
 		// Retrieve the obj's mesh
@@ -76,17 +76,10 @@ namespace render
 				uint meshIndex = row_major(x, y, meshLength);
 				uint bufferIndex = row_major(meshPos.x + x, meshPos.y + y, m_FrameLength);
 
-				if (bufferIndex >= m_FutureBuffer.size() || bufferIndex >= m_DepthBuffer.size())
+				if (bufferIndex >= m_FutureBuffer.size())
 					continue;
 
-				// Depth buffer check
-				if (mesh[meshIndex]->pos.z < *m_DepthBuffer[bufferIndex])
-				{
-					*m_FutureBuffer[bufferIndex] = mesh[meshIndex]->frag;
-
-					// Set new depth buffer num at pos
-					*m_DepthBuffer[bufferIndex] = mesh[meshIndex]->pos.z;
-				}
+				*m_FutureBuffer[bufferIndex] = mesh[meshIndex]->frag;
 			}
 		}
 
@@ -96,7 +89,7 @@ namespace render
 	void Renderer::flush()
 	{
 		// Check if any of the buffers are empty/uninitialize before starting
-		if (m_CurrentBuffer.empty() || m_FutureBuffer.empty() || m_DepthBuffer.empty())
+		if (m_CurrentBuffer.empty() || m_FutureBuffer.empty())
 			return;
 
 		if (m_CurrentBuffer != m_FutureBuffer)
@@ -118,8 +111,6 @@ namespace render
 		}
 
 		m_CurrentBuffer = m_FutureBuffer;
-
-		resetDepth();
 		return;
 	}
 
@@ -156,10 +147,5 @@ namespace render
 		GetConsoleCursorInfo(_hOut, &lpCursor);
 		lpCursor.bVisible = false;
 		SetConsoleCursorInfo(_hOut, &lpCursor);
-	}
-
-	void Renderer::resetDepth()
-	{
-		m_DepthBuffer = std::move(rBuffer<short>(32767, m_FrameLength * m_FrameWidth));
 	}
 }

@@ -11,6 +11,8 @@
 #define BOTTOM_SHADOWED 0x4
 #define LEFT_SHADOWED	0x8
 
+#define BACKGROUND_DEPTH 8
+
 namespace render
 {
 	enum RectCornerShadowType
@@ -30,7 +32,7 @@ namespace render
 		void DrawPoint(const FragColor point, const FragColor bg, const FragPos& pos);
 		// Restricted to horizontal and vertical lines, cannot draw diagonal lines.
 		void DrawLine(const FragPos& p1, const FragPos& p2, const FragColor point, const FragColor bg);
-		void DrawRect(const short& length, const short& width, const FragColor point, const FragColor bg, const FragPos& pos, int lineRenderFlags = 0);
+		void DrawRect(const short& length, const short& width, const FragColor point, const FragColor bg, const FragPos& pos, int lineRenderFlags = 0, bool shouldFill = false);
 		void DrawUText(const std::wstring& txt, const FragColor point, const FragColor bg, const FragPos& pos);
 
 		inline const void SetGlobalPos(const FragPos& pos) { m_Pos = pos; };
@@ -43,10 +45,15 @@ namespace render
 		{
 			uint i = row_major(pos.x, pos.y, m_Length);
 
-			if (m_Buffer[i].frag != frag)
+			// Depth buffer check
+			if (pos.z < m_Buffer[i].pos.z)
 			{
-				m_Buffer[i].frag = frag;
-				m_Buffer[i].pos = pos;
+
+				if (m_Buffer[i].frag != frag)
+				{
+					m_Buffer[i].frag = frag;
+					m_Buffer[i].pos = pos;     // Set new depth buffer num at pos
+				}
 			}
 		}
 	private:
