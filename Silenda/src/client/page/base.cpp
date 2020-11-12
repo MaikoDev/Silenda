@@ -5,6 +5,7 @@
 namespace Silenda
 {
 	std::wstring DisplayName = L"";
+	bool BaseRunningState = false;
 	Page* LoadedPage = nullptr;
 
 	Page::Page(const unsigned short length, const unsigned short width)

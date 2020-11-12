@@ -143,9 +143,10 @@ namespace Silenda
 
 					// Remove current input and preceed to next
 					ReadConsoleInput(input_handle, &input_record, 1, &length);
-					std::this_thread::sleep_for(std::chrono::milliseconds(1));
 				}
 			}
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	}
 }

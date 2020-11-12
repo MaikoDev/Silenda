@@ -3,6 +3,7 @@
 #include <mutex>
 
 #include "base.h"
+#include "..\utils\timing.h"
 
 namespace Silenda
 {
@@ -17,7 +18,11 @@ namespace Silenda
 
 		render::MeshFrame OnRender() override;
 	private:
-		std::wstring inputText = L"";
-		std::mutex mtx;
+		short m_FormLength = 95, m_FormWidth = 26;
+		render::FragPos m_FormPos = { (m_Mesh->GetLength() / 2) - (m_FormLength / 2), (m_Mesh->GetWidth() / 2) - (m_FormWidth / 2), 0 };
+
+		std::wstring m_InputText = L"";
+		BasicTimer m_Timer;
+		std::mutex m_Mtx;
 	};
 }

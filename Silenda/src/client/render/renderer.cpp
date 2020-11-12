@@ -17,19 +17,18 @@ namespace render
 		_setmode(_fileno(stdout), _O_U16TEXT);
 
 		SetConsoleTitle(LPCSTR("Silenda"));
-
-		HWND hwnd = GetConsoleWindow();
-		DWORD style = GetWindowLong(hwnd, GWL_STYLE);
+		DWORD style = GetWindowLong(_hwnd, GWL_STYLE);
 
 		style &= ~WS_MAXIMIZEBOX;
 		style &= ~WS_MINIMIZEBOX;
 		style &= ~WS_HSCROLL;
 		style &= ~WS_VSCROLL;
 		style &= ~WS_SYSMENU;
+		style &= ~WS_SIZEBOX;
 
-		ShowScrollBar(hwnd, SB_BOTH, FALSE);
-		SetWindowLong(hwnd, GWL_STYLE, style);
-		SetWindowPos(hwnd, NULL, 0, 0, 20, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+		ShowScrollBar(_hwnd, SB_BOTH, FALSE);
+		SetWindowLong(_hwnd, GWL_STYLE, style);
+		SetWindowPos(_hwnd, NULL, 0, 0, 20, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 	}
 
 	Renderer* Renderer::GetInstance()
@@ -51,6 +50,9 @@ namespace render
 
 		// Setup depth buffer
 		m_DepthBuffer = std::move(rBuffer<short>(32767, area));
+
+		// Reset console window to size
+		SetWindowSize(length, width);
 	}
 
 	bool Renderer::draw(Renderable* obj)
@@ -108,6 +110,7 @@ namespace render
 
 					setCursorPos(x, y);
 					std::wcout << *m_FutureBuffer[row_major(x, y, m_FrameLength)];
+					//std::wcout << L'*';
 				}
 			}
 
@@ -115,25 +118,44 @@ namespace render
 		}
 
 		m_CurrentBuffer = m_FutureBuffer;
+
 		resetDepth();
 		return;
 	}
 
 	void Renderer::SetWindowSize(const int& width, const int& height)
 	{
-		HWND hwnd = GetConsoleWindow();
 		RECT rct = { NULL };
 
-		GetWindowRect(hwnd, &rct);
-		MoveWindow(hwnd, rct.left, rct.top, width * 10, height * 21, TRUE);
+		HANDLE _hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		CONSOLE_SCREEN_BUFFER_INFO SBInfo;
+		COORD SBSize;
+
+		GetWindowRect(_hwnd, &rct);
+		MoveWindow(_hwnd, rct.left, rct.top, (width * 8) + 35, (height * 19) + 28, TRUE);
+
+		GetConsoleScreenBufferInfo(_hOut, &SBInfo);
+		
+		SBSize.X = SBInfo.dwSize.X;
+		SBSize.Y = height + 1;
+
+		SetConsoleScreenBufferSize(_hOut, SBSize);
+		showCursor(false);
 	}
 
 	void Renderer::setCursorPos(const ushort& x, const ushort& y)
 	{
-		static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 		std::wcout.flush();
 		COORD coord = { (SHORT)x, (SHORT)y };
-		SetConsoleCursorPosition(hOut, coord);
+		SetConsoleCursorPosition(_hOut, coord);
+	}
+
+	void Renderer::showCursor(const bool& showFlag)
+	{
+		CONSOLE_CURSOR_INFO lpCursor;
+		GetConsoleCursorInfo(_hOut, &lpCursor);
+		lpCursor.bVisible = false;
+		SetConsoleCursorInfo(_hOut, &lpCursor);
 	}
 
 	void Renderer::resetDepth()

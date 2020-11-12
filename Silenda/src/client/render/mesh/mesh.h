@@ -6,8 +6,21 @@
 
 #include "..\..\utils\row_major.h"
 
+#define TOP_SHADOWED	0x1
+#define RIGHT_SHADOWED	0x2
+#define BOTTOM_SHADOWED 0x4
+#define LEFT_SHADOWED	0x8
+
 namespace render
 {
+	enum RectCornerShadowType
+	{
+		NONE		= 0x0,
+		HORIZONTAL	= 0x1,
+		VERTICAL	= 0x2,
+		FULL		= 0x3,
+	};
+
 	class MeshFrame : public rBuffer<MeshPoint>
 	{
 	public:
@@ -17,7 +30,7 @@ namespace render
 		void DrawPoint(const FragColor point, const FragColor bg, const FragPos& pos);
 		// Restricted to horizontal and vertical lines, cannot draw diagonal lines.
 		void DrawLine(const FragPos& p1, const FragPos& p2, const FragColor point, const FragColor bg);
-		void DrawRect(const short& length, const short& width, const FragColor point, const FragColor bg, const FragPos& pos);
+		void DrawRect(const short& length, const short& width, const FragColor point, const FragColor bg, const FragPos& pos, int lineRenderFlags = 0);
 		void DrawUText(const std::wstring& txt, const FragColor point, const FragColor bg, const FragPos& pos);
 
 		inline const void SetGlobalPos(const FragPos& pos) { m_Pos = pos; };
@@ -25,7 +38,7 @@ namespace render
 		inline const ushort& GetLength() const& { return m_Length; };
 		inline const ushort& GetWidth() const& { return m_Width; };
 		inline const FragPos& GetGlobalPos() const& { return m_Pos; };
-	private:
+
 		inline void DrawFrag(const Fragment& frag, const FragPos& pos)
 		{
 			uint i = row_major(pos.x, pos.y, m_Length);

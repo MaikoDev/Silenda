@@ -10,6 +10,7 @@
 namespace Silenda
 {
 	extern std::wstring DisplayName;
+	extern bool BaseRunningState;
 
 	class Page : public render::Renderable, public IObserver
 	{

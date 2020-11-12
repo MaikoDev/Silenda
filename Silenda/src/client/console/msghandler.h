@@ -34,6 +34,7 @@ namespace Silenda
 		void update(IObservable* src, const unsigned char controller = 0) override;
 
 		inline const std::queue<MsgHandle>& GetLastHandle() const & { return m_LastHandle; };
+		inline std::queue<MsgHandle> CopyLastHandle() { return m_LastHandle; };
 	private:
 		// separate - separates string into individual commands via ';' character
 		// @param1 input string to separate

@@ -65,28 +65,60 @@ namespace render
 		}
 	}
 
-	void MeshFrame::DrawRect(const short& length, const short& width, const FragColor point, const FragColor bg, const FragPos& pos)
+	void MeshFrame::DrawRect(const short& length, const short& width, const FragColor point, const FragColor bg, const FragPos& pos, int lineRenderFlags)
 	{
 		if (length != 0 && width != 0)
 		{
+			//Corner Positions
+			FragPos CornerPos[4] = { pos, { (pos.x + length) - 1, pos.y, pos.z }, { pos.x, (pos.y + width) - 1, pos.z }, { (pos.x + length) - 1, (pos.y + width) - 1, pos.z } };
+
+			//Extract corner flags
+			int cornerFlags[4] = { (2 * ((lineRenderFlags & LEFT_SHADOWED) == LEFT_SHADOWED) + ((lineRenderFlags & TOP_SHADOWED) == TOP_SHADOWED)),
+								   (2 * ((lineRenderFlags & RIGHT_SHADOWED) == RIGHT_SHADOWED) + ((lineRenderFlags & TOP_SHADOWED) == TOP_SHADOWED)),
+								   (2 * ((lineRenderFlags & LEFT_SHADOWED) == LEFT_SHADOWED) + ((lineRenderFlags & BOTTOM_SHADOWED) == BOTTOM_SHADOWED)),
+								   (2 * ((lineRenderFlags & RIGHT_SHADOWED) == RIGHT_SHADOWED) + ((lineRenderFlags & BOTTOM_SHADOWED) == BOTTOM_SHADOWED)),
+			};
+
 			// Construct corners
-			DrawFrag({ L'\u250C', point, bg }, pos);
-			DrawFrag({ L'\u2510', point, bg }, { (pos.x + length) - 1, pos.y, pos.z });
-			DrawFrag({ L'\u2518', point, bg }, { (pos.x + length) - 1, (pos.y + width) - 1, pos.z });
-			DrawFrag({ L'\u2514', point, bg }, { pos.x, (pos.y + width) - 1, pos.z });
+			wchar_t cornerCharBase = 9484;
+			for (ubyte i = 0, offsetIndex = 70; i < 4; i++, offsetIndex--, cornerCharBase += 4)
+			{
+				//cornerChar = cornerCharBase + offset + modifier
+				wchar_t cornerChar = L'\0';
+				ubyte offset, modifier = 0;
+
+				offset = offsetIndex;
+				switch (cornerFlags[i])
+				{
+				case RectCornerShadowType::NONE:
+					offset = 0;
+					break;
+				case RectCornerShadowType::VERTICAL:
+					modifier = 1;
+					break;
+				case RectCornerShadowType::FULL:
+					modifier = 2;
+					break;
+				}
+
+				cornerChar = cornerCharBase + offset + modifier;
+				DrawFrag({ cornerChar, point, bg }, CornerPos[i]);
+			}
 
 			// Constuct top & bottom
-			for (short i = pos.x + 1; i < length - 1; i++)
+			wchar_t lineChar = 9472;
+			for (short i = 0, p = pos.x + 1; i < length - 2; i++, p++)
 			{
-				DrawFrag({ L'\u2500', point, bg }, { i, 0, 0 });
-				DrawFrag({ L'\u2500', point, bg }, { i, width - 1, 0 });
+				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & TOP_SHADOWED) == TOP_SHADOWED) * 80)), point, bg }, { p, pos.y, 0 });
+				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & BOTTOM_SHADOWED) == BOTTOM_SHADOWED) * 80)), point, bg }, { p, pos.y + (width - 1), 0 });
 			}
 
 			// Construct left & right
-			for (short i = pos.y + 1; i < width - 1; i++)
+			lineChar = 9474;
+			for (short i = 0, p = pos.y + 1; i < width - 2; i++, p++)
 			{
-				DrawFrag({ L'\u2502', point, bg }, { 0, i, 0 });
-				DrawFrag({ L'\u2502', point, bg }, { length - 1, i, 0 });
+				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & LEFT_SHADOWED) == LEFT_SHADOWED) * 79)), point, bg }, { pos.x, p, 0 });
+				DrawFrag({ wchar_t(lineChar + (((lineRenderFlags & RIGHT_SHADOWED) == RIGHT_SHADOWED) * 79)), point, bg }, { pos.x + (length - 1), p, 0 });
 			}
 		}
 	}

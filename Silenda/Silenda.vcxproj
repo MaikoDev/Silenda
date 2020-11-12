@@ -118,6 +118,7 @@
     <ClInclude Include="src\client\utils\iobservable.h" />
     <ClInclude Include="src\client\utils\iobserver.h" />
     <ClInclude Include="src\client\utils\row_major.h" />
+    <ClInclude Include="src\client\utils\timing.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\menu.txt" />

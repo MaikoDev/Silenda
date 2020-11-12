@@ -82,12 +82,15 @@ int main(int argc, char** argv)
 
 	login->load();
 
-	rPtr->init(100, 30);
+	rPtr->init(117, 29);
+	Silenda::BaseRunningState = true;
 
-	while (true)
+	while (Silenda::BaseRunningState)
 	{
 		rPtr->draw(Silenda::LoadedPage);
 		rPtr->flush();
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 
 	/*CryptoPP::AutoSeededRandomPool rng;
