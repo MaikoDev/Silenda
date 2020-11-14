@@ -1,9 +1,11 @@
 #pragma once
 
 #include <mutex>
+#include <vector>
 
 #include "base.h"
 #include "..\utils\timing.h"
+#include "..\network\chat\cl_message.h"
 
 namespace Silenda
 {
@@ -18,6 +20,8 @@ namespace Silenda
 
 		render::MeshFrame OnRender() override;
 		void initPostLoad() override;
+	private:
+		std::vector<ChatMessage> m_MessageLog;
 	private:
 		short m_FormLength = 95, m_FormWidth = 26;
 		render::FragPos m_FormPos = { (m_Mesh->GetLength() / 2) - (m_FormLength / 2), (m_Mesh->GetWidth() / 2) - (m_FormWidth / 2), 0 };

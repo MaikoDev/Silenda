@@ -1,4 +1,6 @@
 ﻿#include <iostream>
+
+#define NOMINMAX
 #include <Windows.h>
 #include <io.h>
 #include <fcntl.h>

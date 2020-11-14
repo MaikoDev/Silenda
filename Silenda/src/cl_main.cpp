@@ -2,21 +2,48 @@
 #include <memory>
 #include <io.h>
 #include <fcntl.h>
+#include <time.h>
+#include <ctime>
 
-#include "client\page\chat.h"
-#include "client\page\login.h"
-#include "client\console\msghandler.h"
-#include "client\render\renderer.h"
-#include "client\console\mtc.h"
-#include "cryptopp\osrng.h"
-#include "cryptopp\rsa.h"
-#include "cryptopp\filters.h"
-#include "cryptopp\gzip.h"
+#include "client/page/chat.h"
+#include "client/page/login.h"
+#include "client/console/msghandler.h"
+#include "client/render/renderer.h"
+#include "client/console/mtc.h"
+#include "cryptopp/osrng.h"
+#include "cryptopp/rsa.h"
+#include "cryptopp/filters.h"
+#include "cryptopp/gzip.h"
+
+#include "pods/buffers.h"
+#include "pods/json.h"
 
 using namespace render;
 
 int main(int argc, char** argv)
 {
+	struct tm newtime;
+	std::time_t now = time(0);
+	localtime_s(&newtime, &now);
+
+	ChatMessage testMessage = { "TestSender", time(0), "Hello World!" };
+	pods::ResizableOutputBuffer out;
+	pods::PrettyJsonSerializer<decltype(out)> serializer(out);
+	if (serializer.save(testMessage) != pods::Error::NoError)
+	{
+		printf("Serialization Error\n");
+	}
+
+	std::string outputJson(out.data(), out.size());
+	ChatMessage loadedMessage;
+
+	pods::InputBuffer in(outputJson.data(), outputJson.size());
+	pods::JsonDeserializer<decltype(in)> deserializer(in);
+	if (deserializer.load(loadedMessage) != pods::Error::NoError)
+	{
+		printf("Deserialization Error\n");
+	}
+
 	Silenda::MTConsole* consolePtr = Silenda::MTConsole::GetInstance();
 	Silenda::MsgHandler* handlerPtr = Silenda::MsgHandler::GetInstance();
 
