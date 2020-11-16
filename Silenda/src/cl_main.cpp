@@ -5,6 +5,9 @@
 #include <time.h>
 #include <ctime>
 
+//#include "client/network/chat/cl_message.h"
+#include "client/page/chatapp.h"
+
 #include "client/page/chat.h"
 #include "client/page/login.h"
 #include "client/console/msghandler.h"
@@ -22,11 +25,10 @@ using namespace render;
 
 int main(int argc, char** argv)
 {
-	struct tm newtime;
-	std::time_t now = time(0);
-	localtime_s(&newtime, &now);
+	Silenda::ChatApp testApp({ 0, 0, 0 });
+	testApp.TimeStr(time(0));
 
-	ChatMessage testMessage = { "TestSender", time(0), "Hello World!" };
+	ChatMessage testMessage = { "TestSender", UserLevel::user, time(0), "Hello World!" };
 	pods::ResizableOutputBuffer out;
 	pods::PrettyJsonSerializer<decltype(out)> serializer(out);
 	if (serializer.save(testMessage) != pods::Error::NoError)
