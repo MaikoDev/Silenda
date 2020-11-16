@@ -3,21 +3,14 @@
 #include <string>
 
 #include "cl_userlevel.h"
+#include "msgpack.hpp"
 
-#include <pods/pods.h>
+typedef msgpack::type::tuple<std::wstring, unsigned int, __int64, std::wstring> ChatMessage;
 
-struct ChatMessage
+/*struct ChatMessage
 {
 	std::string sender;
 	UserLevel role;
 	__int64 timesent;
 	std::string message;
-
-	PODS_SERIALIZABLE(
-		1,
-		PODS_MDR(sender),
-		PODS_MDR(role),
-		PODS_MDR(timesent),
-		PODS_MDR(message)
-	)
-};
+};*/

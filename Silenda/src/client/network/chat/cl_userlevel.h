@@ -1,6 +1,6 @@
 #pragma once
 
-enum class UserLevel
+enum UserLevel
 {
 	user = 0,
 	admin = 1,

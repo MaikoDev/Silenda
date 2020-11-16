@@ -7,6 +7,7 @@
 
 //#include "client/network/chat/cl_message.h"
 #include "client/page/chatapp.h"
+#include "msgpack.hpp"
 
 #include "client/page/chat.h"
 #include "client/page/login.h"
@@ -18,41 +19,30 @@
 #include "cryptopp/filters.h"
 #include "cryptopp/gzip.h"
 
-#include "pods/buffers.h"
-#include "pods/json.h"
-
 using namespace render;
 
 int main(int argc, char** argv)
 {
-	Silenda::ChatApp testApp({ 0, 0, 0 });
-	testApp.TimeStr(time(0));
+	ChatMessage message(L"Aegis", UserLevel::superuser, time(0), L"Hello World!");
 
-	ChatMessage testMessage = { "TestSender", UserLevel::user, time(0), "Hello World!" };
-	pods::ResizableOutputBuffer out;
-	pods::PrettyJsonSerializer<decltype(out)> serializer(out);
-	if (serializer.save(testMessage) != pods::Error::NoError)
-	{
-		printf("Serialization Error\n");
-	}
+	std::stringstream buffer;
+	msgpack::pack(buffer, message);
 
-	std::string outputJson(out.data(), out.size());
-	ChatMessage loadedMessage;
+	buffer.seekg(0);
+	std::string str(buffer.str());
 
-	pods::InputBuffer in(outputJson.data(), outputJson.size());
-	pods::JsonDeserializer<decltype(in)> deserializer(in);
-	if (deserializer.load(loadedMessage) != pods::Error::NoError)
-	{
-		printf("Deserialization Error\n");
-	}
+	msgpack::object_handle oh = msgpack::unpack(str.data(), str.size());
+	msgpack::object deserialized = oh.get();
+	msgpack::type::tuple<std::wstring, unsigned int, __int64, std::wstring> dst;
+	deserialized.convert(dst);
 
 	Silenda::MTConsole* consolePtr = Silenda::MTConsole::GetInstance();
 	Silenda::MsgHandler* handlerPtr = Silenda::MsgHandler::GetInstance();
 
 	Renderer* rPtr = Renderer::GetInstance();
 
-	Silenda::Page* login = new Silenda::LoginPage();
 	Silenda::Page* chat = new Silenda::ChatPage();
+	Silenda::Page* login = new Silenda::LoginPage();
 
 	login->LinkPage("SilendaChat", chat);
 

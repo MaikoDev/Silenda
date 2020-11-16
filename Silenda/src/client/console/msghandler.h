@@ -1,7 +1,7 @@
 #pragma once
 
 #include <queue>
-#include "..\utils\iobserver.h"
+#include "../utils/iobserver.h"
 #include "mtc.h"
 
 #define MSG_TXT 0x0
