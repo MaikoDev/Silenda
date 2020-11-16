@@ -3,9 +3,9 @@
 #include <string>
 #include <unordered_map>
 
-#include "..\render\renderable.h"
-#include "..\render\mesh\mesh.h"
-#include "..\console\msghandler.h"
+#include "../render/renderable.h"
+#include "../render/mesh/mesh.h"
+#include "../console/msghandler.h"
 
 namespace Silenda
 {

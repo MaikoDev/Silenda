@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-#include "..\utils\iobserver.h"
+#include "../utils/iobserver.h"
 
 namespace Silenda
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mesh\mesh.h"
+#include "mesh/mesh.h"
 
 namespace render
 {

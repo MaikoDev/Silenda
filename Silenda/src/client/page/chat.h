@@ -6,7 +6,7 @@
 #include "base.h"
 #include "chatapp.h"
 
-#include "..\utils\timing.h"
+#include "../utils/timing.h"
 
 namespace Silenda
 {

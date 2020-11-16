@@ -1,10 +1,10 @@
 #pragma once
 
 #include "meshpoint.h"
-#include "..\rbuffer.h"
-#include "..\rbuffer.cpp"
+#include "../rbuffer.h"
+#include "../rbuffer.cpp"
 
-#include "..\..\utils\row_major.h"
+#include "../../utils/row_major.h"
 
 #define TOP_SHADOWED	0x1
 #define RIGHT_SHADOWED	0x2

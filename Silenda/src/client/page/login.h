@@ -3,7 +3,7 @@
 #include <mutex>
 
 #include "base.h"
-#include "..\utils\timing.h"
+#include "../utils/timing.h"
 
 namespace Silenda
 {

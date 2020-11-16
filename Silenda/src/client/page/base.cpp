@@ -1,6 +1,6 @@
 #include "base.h"
 
-#include "..\render\renderer.h"
+#include "../render/renderer.h"
 
 namespace Silenda
 {

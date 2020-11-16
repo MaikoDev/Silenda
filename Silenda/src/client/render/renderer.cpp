@@ -7,7 +7,7 @@
 
 #include "renderer.h"
 
-#include "..\utils\row_major.h"
+#include "../utils/row_major.h"
 
 namespace render
 {

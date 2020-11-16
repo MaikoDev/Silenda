@@ -7,7 +7,7 @@
 #define NOMINMAX
 #include <Windows.h>
 
-#include "..\utils\iobservable.h"
+#include "../utils/iobservable.h"
 
 namespace Silenda
 {

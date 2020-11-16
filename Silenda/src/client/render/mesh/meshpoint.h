@@ -1,7 +1,7 @@
 #pragma once
 
-#include "..\fragment.h"
-#include "..\fragpos.h"
+#include "../fragment.h"
+#include "../fragpos.h"
 
 namespace render
 {
