@@ -16,7 +16,7 @@ namespace Silenda
 
 		void OnReceive(const ChatMessage message);
 
-		void draw(render::MeshFrame* mesh);
+		void draw(render::MeshFrame* mesh, const bool& milTime = false);
 	private:
 		// TimeStr
 		// @param1 time to be compared with current time to determine time format

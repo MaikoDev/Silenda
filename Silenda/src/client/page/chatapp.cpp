@@ -14,7 +14,7 @@ namespace Silenda
 		m_MessageLog.push_back(message);
 	}
 
-	void ChatApp::draw(render::MeshFrame* mesh)
+	void ChatApp::draw(render::MeshFrame* mesh, const bool& milTime)
 	{
 		// Possible overflow with ChatPos short to uchar j
 		// i < 7 <-- magic number is relative to amount of messages can be fit in the Silenda 'window' (dependent on width)
@@ -25,7 +25,7 @@ namespace Silenda
 
 			std::wstring senderName = msg.get<0>();
 			render::FragColor userColor;
-			std::wstring msgtime = TimeStr(msg.get<2>());
+			std::wstring msgtime = TimeStr(msg.get<2>(), milTime);
 
 			switch (msg.get<1>()) // retrieve userlevel from message
 			{

@@ -39,9 +39,15 @@ namespace Silenda
 
 				while (!commands.empty())
 				{
-					if (commands.front().Message.Key == L"exit")
+					if (commands.front().Message.Key == L"exit") // exit program execution
 						BaseRunningState = false;
-					// exit program execution
+					else if (commands.front().Message.Key == L"cl_24hrtime")
+					{
+						if (commands.front().Message.Value[0] == L"true")
+							m_milTime = true;
+						else if (commands.front().Message.Value[0] == L"false")
+							m_milTime = false;
+					}
 
 					commands.pop();
 				}
@@ -76,7 +82,7 @@ namespace Silenda
 		////////////////////////////////////////////////////////////////////////
 
 		// Chat Region Drawing
-		m_ChatWindow->draw(m_Mesh);
+		m_ChatWindow->draw(m_Mesh, m_milTime);
 
 		m_Mesh->DrawUText(m_InputText, render::COLOR_DARK_GREEN, render::COLOR_BLACK, { m_FormPos.x + 4, m_FormWidth - 1, BACKGROUND_DEPTH });
 

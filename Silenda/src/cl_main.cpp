@@ -19,10 +19,18 @@
 #include "cryptopp/filters.h"
 #include "cryptopp/gzip.h"
 
+#include "client/network/security/netpacker.h"
+
 using namespace render;
 
 int main(int argc, char** argv)
 {
+	Silenda::NetPacker* packer = Silenda::NetPacker::GetInstance();
+	packer->genKeys(4096);
+
+	std::string testText = packer->encrypt("Sed diam tellus, accumsan vitae luctus eget, dignissim ut metus. Nunc ac venenatis libe.", packer->GetPublicKey());
+	std::string unpacked = packer->decrypt(testText);
+
 	ChatMessage message(L"Aegis", UserLevel::superuser, time(0), L"Hello World!");
 
 	std::stringstream buffer;
@@ -67,9 +75,17 @@ int main(int argc, char** argv)
 	CryptoPP::RSA::PrivateKey privateKey(params);
 	CryptoPP::RSA::PublicKey publicKey(params);
 
+	std::string testSave;
+	CryptoPP::StringSink pss(testSave);
+	publicKey.Save(pss);
+
+	CryptoPP::StringSource ss(testSave, true);
+	CryptoPP::RSA::PublicKey loadpublicKey;
+	loadpublicKey.Load(ss);
+
 	std::string cipher, compressed, decompressed, recovered;
 
-	CryptoPP::RSAES_OAEP_SHA_Encryptor e(publicKey);
+	CryptoPP::RSAES_OAEP_SHA_Encryptor e(loadpublicKey);
 
 	CryptoPP::StringSource ss1("Hello Secret World!", true,
 		new CryptoPP::PK_EncryptorFilter(rng, e,
@@ -87,7 +103,7 @@ int main(int argc, char** argv)
 
 	CryptoPP::RSAES_OAEP_SHA_Decryptor d(privateKey);
 
-	CryptoPP::StringSource ss2(cipher, true,
+	CryptoPP::StringSource ss2(decompressed, true,
 		new CryptoPP::PK_DecryptorFilter(rng, d,
 			new CryptoPP::StringSink(recovered)
 		) // PK_DecryptorFilter
