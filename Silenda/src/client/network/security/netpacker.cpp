@@ -66,13 +66,45 @@ namespace Silenda
 		return retString;
 	}
 
-	const std::string NetPacker::GetPublicKey() const&
+	const std::string NetPacker::compress(const std::string& data)
 	{
-		std::string retString;
-		CryptoPP::StringSink ss(retString);
-		m_PublicKey.Save(ss);
+		// Compression
+		std::string compressed;
 
-		return retString;
+		CryptoPP::Gzip zipper(new CryptoPP::StringSink(compressed));
+		zipper.Put((CryptoPP::byte*)data.c_str(), data.size());
+		zipper.MessageEnd();
+
+		return compressed;
+	}
+
+	const std::string NetPacker::decompress(const std::string& data)
+	{
+		// Decompression
+		std::string decompressed;
+
+		CryptoPP::Gunzip unzipper(new CryptoPP::StringSink(decompressed));
+		unzipper.Put((unsigned char*)data.data(), data.size());
+		unzipper.MessageEnd();
+
+		return decompressed;
+	}
+
+	const std::string& NetPacker::GetPublicKey() const&
+	{
+		if (m_PublicKeyStr == "")
+		{
+			std::string retString;
+			CryptoPP::StringSink ss(retString);
+			m_PublicKey.Save(ss);
+		}
+
+		return m_PublicKeyStr;
+	}
+
+	const bool NetPacker::validate(const std::string& data)
+	{
+		return (m_PublicKeyStr == decrypt(data));
 	}
 
 	void NetPacker::genKeys(unsigned int keySize)
@@ -82,5 +114,6 @@ namespace Silenda
 
 		m_PrivateKey = CryptoPP::RSA::PrivateKey(params);
 		m_PublicKey = CryptoPP::RSA::PublicKey(params);
+		m_PublicKeyStr = "";
 	}
 }

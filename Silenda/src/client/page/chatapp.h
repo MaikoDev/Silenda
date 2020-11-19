@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../render/mesh/mesh.h"
-#include "../network/chat/cl_message.h"
+#include "../network/chat/cl_chat.h"
+#include "../utils/iobserver.h"
 
 namespace Silenda
 {
@@ -24,7 +25,8 @@ namespace Silenda
 		// @return final formatted time string
 		const std::wstring TimeStr(const __int64 input_time, bool milTime = false);
 	private:
-		std::vector<ChatMessage> m_MessageLog;
+		//std::vector<ChatMessage> m_MessageLog;
+		G_ChatLog* GlobalChat = G_ChatLog::GetInstance();
 		render::FragPos m_ChatPos;
 	};
 }

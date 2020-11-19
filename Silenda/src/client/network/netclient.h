@@ -8,6 +8,7 @@
 
 #include "../utils/iobservable.h"
 #include "security/netpacker.h"
+#include "message/netmessage.h"
 
 namespace Silenda
 {
@@ -35,17 +36,26 @@ namespace Silenda
 		int Connect();
 		int Disconnect();
 
+		void Send(const NetworkMessage msg);
+
 		const inline void config(const std::string& serverIP, const unsigned int& serverPort) { m_ServerSession.address = serverIP; m_ServerSession.listenport = serverPort; m_ServerSession.valid = true; };
 	private:
 		void OnReceive();
 
 		void decode(const std::string& raw);
 
-		void ExecuteNetServer(const std::string& msg);
-		void ExecuteNetAuth(const std::string& msg);
-		void ExecuteNetClient(const std::string& msg);
+		const inline void net_sv_deny(const std::string& param = "");
+		const inline void net_sv_pkvalidate(const std::string& param = "");
+		const inline void net_sv_pksend(const std::string& param = "");
+		const inline void net_sv_pkrequest(const std::string& param = "");
+		const inline void net_sv_auth_passed(const std::string& param = "");
+
+		const inline void net_chatlog(const std::string& param = "");
+		const inline void net_chatmsg(const std::string& param = "");
 	private:
 		NetSession m_ServerSession;
+		std::string m_ServerPublicKey;
+		bool m_ServerAuthPassed = false;
 
 		char* m_NetworkBuffer;
 		size_t m_NetworkBufferSize;

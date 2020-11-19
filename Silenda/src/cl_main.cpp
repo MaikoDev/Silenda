@@ -28,10 +28,7 @@ int main(int argc, char** argv)
 	Silenda::NetPacker* packer = Silenda::NetPacker::GetInstance();
 	packer->genKeys(4096);
 
-	std::string testText = packer->encrypt("Sed diam tellus, accumsan vitae luctus eget, dignissim ut metus. Nunc ac venenatis libe.", packer->GetPublicKey());
-	std::string unpacked = packer->decrypt(testText);
-
-	ChatMessage message(L"Aegis", UserLevel::superuser, time(0), L"Hello World!");
+	Silenda::ChatMessage message(L"Aegis", UserLevel::superuser, time(0), L"Hello World!");
 
 	std::stringstream buffer;
 	msgpack::pack(buffer, message);

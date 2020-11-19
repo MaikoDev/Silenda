@@ -6,28 +6,28 @@ namespace Silenda
 {
 	ChatApp::ChatApp(const render::FragPos& pos) : m_ChatPos(pos)
 	{
-		m_MessageLog.reserve(256);
+		GlobalChat->reserve(256);
 	}
 
 	void ChatApp::OnReceive(const ChatMessage message)
 	{
-		m_MessageLog.push_back(message);
+		GlobalChat->push_back(message);
 	}
 
 	void ChatApp::draw(render::MeshFrame* mesh, const bool& milTime)
 	{
 		// Possible overflow with ChatPos short to uchar j
 		// i < 7 <-- magic number is relative to amount of messages can be fit in the Silenda 'window' (dependent on width)
-		unsigned int logSize = m_MessageLog.size();
+		unsigned int logSize = GlobalChat->size();
 		for (unsigned char i = logSize, j = m_ChatPos.y; i > 0 && logSize - i < 7; i--, j -= 3)
 		{
-			ChatMessage msg = m_MessageLog[i - 1];
+			ChatMessage msg = (*GlobalChat)[i - 1];
 
-			std::wstring senderName = msg.get<0>();
+			std::wstring senderName = msg.sender;
 			render::FragColor userColor;
-			std::wstring msgtime = TimeStr(msg.get<2>(), milTime);
+			std::wstring msgtime = TimeStr(msg.timesent, milTime);
 
-			switch (msg.get<1>()) // retrieve userlevel from message
+			switch (msg.role) // retrieve userlevel from message
 			{
 			case UserLevel::user:
 				userColor = render::COLOR_DARK_GREEN;
@@ -47,7 +47,7 @@ namespace Silenda
 			mesh->DrawUText(msgtime, render::COLOR_DARK_GREEN, render::COLOR_BLACK, { short(m_ChatPos.x + senderName.size() + 1), j - 1, m_ChatPos.z });
 
 			// draw message
-			mesh->DrawUText(msg.get<3>(), render::COLOR_WHITE, render::COLOR_BLACK, { m_ChatPos.x, j, m_ChatPos.z });
+			mesh->DrawUText(msg.message, render::COLOR_WHITE, render::COLOR_BLACK, { m_ChatPos.x, j, m_ChatPos.z });
 		}
 	}
 
