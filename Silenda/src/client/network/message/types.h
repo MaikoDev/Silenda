@@ -1,14 +1,5 @@
 #pragma once
 
-#include "msgpack.hpp"
-
-enum NetworkMessageType
-{
-	NETWORK_SERVER = 0, // ban, unban, kick, clear, mute, unmute,
-	NETWORK_AUTH,       // cl_pkrequest, cl_pksend, sv_pksend, cl_pkconfirm, sv_pkconfirm, sv_deny
-	NETWORK_CLIENT      // chatlog, chatmsg
-};
-
 enum NetMessageType
 {
 	sv_deny = 0,

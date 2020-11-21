@@ -15,8 +15,6 @@ namespace Silenda
 		ChatApp(const render::FragPos& pos);
 		~ChatApp() {};
 
-		void OnReceive(const ChatMessage message);
-
 		void draw(render::MeshFrame* mesh, const bool& milTime = false);
 	private:
 		// TimeStr

@@ -1,11 +1,7 @@
 #pragma once
 
-#include <iostream>
-
 #include "types.h"
 #include "fragcolor.h"
-
-#include <wchar.h>
 
 namespace render
 {

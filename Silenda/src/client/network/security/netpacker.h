@@ -1,10 +1,30 @@
 #pragma once
 
-#include "cryptopp/rsa.h"
-#include "cryptopp/osrng.h"
-
 namespace Silenda
 {
+	template<class T>
+	const inline std::string serialize(const T& obj)
+	{
+		std::stringstream buffer;
+		msgpack::pack(buffer, obj);
+
+		buffer.seekg(0);
+		std::string ret(buffer.str());
+
+		return ret;
+	}
+
+	template<class T>
+	const inline T deserialize(const std::string& serialized)
+	{
+		msgpack::object_handle objectHandle = msgpack::unpack(serialized.data(), serialized.size());
+		msgpack::object deserialized = objectHandle.get();
+		T retObj;
+		deserialized.convert(retObj);
+
+		return retObj;
+	}
+
 	class NetPacker
 	{
 	public:

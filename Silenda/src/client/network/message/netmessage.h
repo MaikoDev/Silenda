@@ -1,9 +1,6 @@
 #pragma once
 
-#include <string>
-
 #include "types.h"
-#include "msgpack.hpp"
 
 // NetworkMessage
 // @param1 NetMessageType

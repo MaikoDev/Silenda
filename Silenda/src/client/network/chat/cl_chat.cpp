@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "cl_chat.h"
 
 namespace Silenda
@@ -11,23 +12,23 @@ namespace Silenda
 		return m_Instance;
 	}
 
-	const ChatMessage G_ChatLog::operator[](const size_t index)
+	const ServerChatMessage G_ChatLog::operator[](const size_t index)
 	{
 		m_Mutex.lock();
-		ChatMessage ret = m_ChatLog[index];
+		ServerChatMessage ret = m_ChatLog[index];
 		m_Mutex.unlock();
 
 		return ret;
 	}
 
-	const void G_ChatLog::operator=(const std::vector<ChatMessage>& log)
+	const void G_ChatLog::operator=(const std::vector<ServerChatMessage>& log)
 	{
 		m_Mutex.lock();
 		m_ChatLog = log;
 		m_Mutex.unlock();
 	}
 
-	const void G_ChatLog::push_back(const ChatMessage& message)
+	const void G_ChatLog::push_back(const ServerChatMessage& message)
 	{
 		m_Mutex.lock();
 		m_ChatLog.push_back(message);

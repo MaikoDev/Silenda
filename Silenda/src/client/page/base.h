@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <unordered_map>
-
 #include "../render/renderable.h"
 #include "../render/mesh/mesh.h"
 #include "../console/msghandler.h"

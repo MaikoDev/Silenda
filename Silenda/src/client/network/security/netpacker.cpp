@@ -1,7 +1,5 @@
+#include "pch.h"
 #include "netpacker.h"
-
-#include "cryptopp/filters.h"
-#include "cryptopp/gzip.h"
 
 namespace Silenda
 {

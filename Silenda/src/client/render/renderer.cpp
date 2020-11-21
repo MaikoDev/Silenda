@@ -1,10 +1,4 @@
-﻿#include <iostream>
-
-#define NOMINMAX
-#include <Windows.h>
-#include <io.h>
-#include <fcntl.h>
-
+﻿#include "pch.h"
 #include "renderer.h"
 
 #include "../utils/row_major.h"

@@ -1,12 +1,5 @@
 #pragma once
 
-#include <string>
-#include <deque>
-#include <thread>
-
-#define NOMINMAX
-#include <Windows.h>
-
 #include "../utils/iobservable.h"
 
 namespace Silenda

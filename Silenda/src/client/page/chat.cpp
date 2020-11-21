@@ -1,4 +1,7 @@
+#include "pch.h"
 #include "chat.h"
+
+#include "../network/netclient.h"
 
 namespace Silenda
 {
@@ -29,9 +32,11 @@ namespace Silenda
 			}
 			else if (controller == 3) // msghandler <- messages from handler are only TXT on this controller channel
 			{
-				ChatMessage message(DisplayName, UserLevel::superuser, time(0), MsgHandler::GetInstance()->GetLastHandle().front().Message.Value.front());
-
-				m_ChatWindow->OnReceive(message);
+				ClientChatMessage message(DisplayName, MsgHandler::GetInstance()->GetLastHandle().front().Message.Value.front());
+				
+				std::string payload = serialize(message);
+				//m_ChatWindow->OnReceive(message);
+				NetClient::GetInstance()->Send({ NetMessageType::chatmsg, payload });
 			}
 			else if (controller == 4) // msghandler <- messages from handler are only commands on this controller channel
 			{
@@ -59,6 +64,18 @@ namespace Silenda
 	void ChatPage::initPostLoad()
 	{
 		MTConsole::GetInstance()->SetMaxBufferSize(88);
+		int connection = NetClient::GetInstance()->Connect("127.0.0.1", 54000);
+
+		if (connection == WSAECONNREFUSED)
+		{
+			Page* login = GetConnected("SilendaLogin");
+
+			if (login != nullptr)
+			{
+				this->unload();
+				login->load();
+			}
+		}
 	}
 
 	render::MeshFrame ChatPage::OnRender()
@@ -75,7 +92,7 @@ namespace Silenda
 
 		m_Mesh->DrawLine({ m_FormPos.x + 1, m_FormWidth - 2, m_FormPos.z }, { m_FormPos.x + m_FormLength - 1, m_FormWidth - 2 }, render::COLOR_DARK_GREEN, render::COLOR_BLACK);
 
-		m_Mesh->DrawFrag({ L'\u2570', render::COLOR_DARK_GREEN, render::COLOR_BLACK }, { m_FormPos.x, m_FormPos.y + m_FormWidth - 1, m_FormPos.z });
+		m_Mesh->DrawFrag({ L'\u2570', render::COLOR_DARK_GREEN, render::COLOR_BLACK }, { m_FormPos.x, m_FormPos.y + m_FormWidth - 1, m_FormPos.z - 1 });
 
 		m_Mesh->DrawFrag({ L'>', render::COLOR_DARK_GREEN, render::COLOR_BLACK }, { m_FormPos.x + 3, m_FormWidth - 1, BACKGROUND_DEPTH });
 

@@ -58,8 +58,11 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendor\boost\include;$(ProjectDir)vendor\msgpack\include;$(ProjectDir)vendor\cryptopp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\client;$(ProjectDir)vendor\boost\include;$(ProjectDir)vendor\msgpack\include;$(ProjectDir)vendor\cryptopp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN; _MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -77,8 +80,11 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>$(ProjectDir)vendor\boost\include;$(ProjectDir)vendor\msgpack\include;$(ProjectDir)vendor\cryptopp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\client;$(ProjectDir)vendor\boost\include;$(ProjectDir)vendor\msgpack\include;$(ProjectDir)vendor\cryptopp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN; _MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -97,6 +103,14 @@
     <ClCompile Include="src\client\page\chat.cpp" />
     <ClCompile Include="src\client\page\chatapp.cpp" />
     <ClCompile Include="src\client\page\login.cpp" />
+    <ClCompile Include="src\client\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="src\client\render\fragment.cpp" />
     <ClCompile Include="src\client\render\mesh\mesh.cpp" />
     <ClCompile Include="src\client\render\rbuffer.cpp" />
@@ -117,6 +131,8 @@
     <ClInclude Include="src\client\page\chat.h" />
     <ClInclude Include="src\client\page\chatapp.h" />
     <ClInclude Include="src\client\page\login.h" />
+    <ClInclude Include="src\client\page\pages.h" />
+    <ClInclude Include="src\client\pch.h" />
     <ClInclude Include="src\client\render\fragcolor.h" />
     <ClInclude Include="src\client\render\fragment.h" />
     <ClInclude Include="src\client\render\fragpos.h" />
@@ -127,6 +143,7 @@
     <ClInclude Include="src\client\render\renderable.h" />
     <ClInclude Include="src\client\render\renderer.h" />
     <ClInclude Include="src\client\render\types.h" />
+    <ClInclude Include="src\client\SilendaClient.h" />
     <ClInclude Include="src\client\utils\iobservable.h" />
     <ClInclude Include="src\client\utils\iobserver.h" />
     <ClInclude Include="src\client\utils\row_major.h" />

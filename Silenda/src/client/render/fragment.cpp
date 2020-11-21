@@ -1,6 +1,4 @@
-#define NOMINMAX
-#include <Windows.h>
-
+#include "pch.h"
 #include "fragment.h"
 
 namespace render

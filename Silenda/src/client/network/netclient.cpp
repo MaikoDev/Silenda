@@ -1,18 +1,24 @@
+#include "pch.h"
 #include "netclient.h"
-
-#include <sstream>
 
 #include "../utils/iobserver.h"
 #include "chat/cl_chat.h"
 
 namespace Silenda
 {
-	NetClient::NetClient(const std::string serverIP, const unsigned int serverPort, const size_t networkBufferSize) : m_NetworkBufferSize(networkBufferSize)
+	bool G_ClientAuth = false;
+	NetClient* NetClient::m_Instance = nullptr;
+
+	NetClient::NetClient()
 	{
-		this->config(serverIP, serverPort);
-		m_NetworkBuffer = new char[m_NetworkBufferSize];
+		m_NetworkBuffer = new char[NETWORK_BUFFER_SIZE];
+	}
 
-
+	NetClient* NetClient::GetInstance()
+	{
+		if (m_Instance == nullptr)
+			m_Instance = new NetClient();
+		return m_Instance;
 	}
 
 	NetClient::~NetClient()
@@ -56,8 +62,10 @@ namespace Silenda
 			iter->second->update(this, controller);
 	}
 
-	int NetClient::Connect()
+	int NetClient::Connect(const std::string& serverIP, const unsigned int& serverPort)
 	{
+		config(serverIP, serverPort);
+
 		if (m_ServerSession.valid && !m_ThreadRunning)
 		{
 			// Initialize WinSock
@@ -110,7 +118,11 @@ namespace Silenda
 			m_ThreadRunning = false;
 			m_NetworkWorker.join();
 
+			G_ClientAuth = false;
 			closesocket(m_ClientSocket);
+
+			// Notify any pages there has been a disconnect
+			notify(5);
 			return 1;
 		}
 
@@ -122,11 +134,7 @@ namespace Silenda
 		if (m_ServerSession.valid && m_ThreadRunning)
 		{
 			// Serialization
-			std::stringstream buffer;
-			msgpack::pack(buffer, msg);
-
-			buffer.seekg(0);
-			std::string str(buffer.str());
+			std::string str = serialize(msg);
 
 			std::string networkstring;
 			// Packing and encrypting if needed.
@@ -144,14 +152,16 @@ namespace Silenda
 	{
 		do
 		{
-			ZeroMemory(m_NetworkBuffer, m_NetworkBufferSize);
-			int bytesReceived = recv(m_ClientSocket, m_NetworkBuffer, m_NetworkBufferSize, 0);
+			ZeroMemory(m_NetworkBuffer, NETWORK_BUFFER_SIZE);
+			int bytesReceived = recv(m_ClientSocket, m_NetworkBuffer, NETWORK_BUFFER_SIZE, 0);
 
 			if (bytesReceived > 0)
 			{
 				m_NetworkRaw = std::string(m_NetworkBuffer, 0, bytesReceived);
 				this->decode(m_NetworkRaw);
 			}
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 		} while (m_ThreadRunning);
 	}
@@ -166,10 +176,8 @@ namespace Silenda
 			unpacked = NetPacker::GetInstance()->decompress(raw);
 
 		// Deserialization
-		msgpack::object_handle objectHandle = msgpack::unpack(unpacked.data(), unpacked.size());
-		msgpack::object deserialized = objectHandle.get();
 		NetworkMessage msg;
-		deserialized.convert(msg);
+		msg = deserialize<NetworkMessage>(unpacked);
 
 		// execute the specified message
 		switch (msg.identifier) 
@@ -237,16 +245,15 @@ namespace Silenda
 	const inline void NetClient::net_sv_auth_passed(const std::string& param)
 	{
 		// notify all Pages that NetClient is ready to start processing data to the server.
+		G_ClientAuth = true;
 	}
 
 	// Server sends a vector of ChatMessages
 	const inline void NetClient::net_chatlog(const std::string& param)
 	{
 		// Deserialize the vector of ChatMessage
-		msgpack::object_handle objectHandle = msgpack::unpack(param.data(), param.size());
-		msgpack::object deserialized = objectHandle.get();
-		std::vector<ChatMessage> log;
-		deserialized.convert(log);
+		std::vector<ServerChatMessage> log;
+		log = deserialize<std::vector<ServerChatMessage>>(param);
 
 		// Update changes to global
 		*G_ChatLog::GetInstance() = log;
@@ -256,12 +263,11 @@ namespace Silenda
 	const inline void NetClient::net_chatmsg(const std::string& param)
 	{
 		// Deserialize the ChatMessage
-		msgpack::object_handle objectHandle = msgpack::unpack(param.data(), param.size());
-		msgpack::object deserialized = objectHandle.get();
-		ChatMessage message;
-		deserialized.convert(message);
+		ServerChatMessage message;
+		message = deserialize<ServerChatMessage>(param);
 
 		// Update changes to global
 		G_ChatLog::GetInstance()->push_back(message);
 	}
+
 }

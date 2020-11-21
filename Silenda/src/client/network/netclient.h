@@ -1,14 +1,10 @@
 #pragma once
 
-#include <string>
-#include <thread>
-#include <WS2tcpip.h>
-
-#pragma comment(lib, "ws2_32.lib")
-
 #include "../utils/iobservable.h"
 #include "security/netpacker.h"
 #include "message/netmessage.h"
+
+#define NETWORK_BUFFER_SIZE 4096
 
 namespace Silenda
 {
@@ -19,21 +15,22 @@ namespace Silenda
 		unsigned int listenport;
 	};
 
+	extern bool G_ClientAuth;
+
 	class NetClient : public IObservable
 	{
 	public:
-		// NetClient
-		// @param1 Server IP Address
-		// @param2 Server Listening Port
-		// @param3 Size of network buffer (def: 4096)
-		NetClient(const std::string serverIP, const unsigned int serverPort, const size_t networkBufferSize = 4096);
+		static NetClient* GetInstance();
 		~NetClient();
 
 		void attach(IObserver* obs) override;
 		void detach(IObserver* obs) override;
 		void notify(const unsigned char controller = 0) override;
 
-		int Connect();
+		// Connect
+		// @param1 Server IP Address
+		// @param2 Server Listening Port
+		int Connect(const std::string& serverIP, const unsigned int& serverPort);
 		int Disconnect();
 
 		void Send(const NetworkMessage msg);
@@ -58,11 +55,13 @@ namespace Silenda
 		bool m_ServerAuthPassed = false;
 
 		char* m_NetworkBuffer;
-		size_t m_NetworkBufferSize;
 		SOCKET m_ClientSocket;
 		std::string m_NetworkRaw;
 
 		std::thread m_NetworkWorker;
 		bool m_ThreadRunning = false;
+	private:
+		NetClient();
+		static NetClient* m_Instance;
 	};
 }

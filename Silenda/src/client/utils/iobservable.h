@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <unordered_map>
-
 // Forward declaration of observer class
 class IObserver;
 

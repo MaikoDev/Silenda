@@ -1,7 +1,5 @@
 #pragma once
 
-#include "msgpack.hpp"
-
 enum UserLevel
 {
 	user = 0,

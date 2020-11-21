@@ -1,17 +1,11 @@
+#include "pch.h"
 #include "chatapp.h"
-
-#include <ctime>
 
 namespace Silenda
 {
 	ChatApp::ChatApp(const render::FragPos& pos) : m_ChatPos(pos)
 	{
 		GlobalChat->reserve(256);
-	}
-
-	void ChatApp::OnReceive(const ChatMessage message)
-	{
-		GlobalChat->push_back(message);
 	}
 
 	void ChatApp::draw(render::MeshFrame* mesh, const bool& milTime)
@@ -21,7 +15,7 @@ namespace Silenda
 		unsigned int logSize = GlobalChat->size();
 		for (unsigned char i = logSize, j = m_ChatPos.y; i > 0 && logSize - i < 7; i--, j -= 3)
 		{
-			ChatMessage msg = (*GlobalChat)[i - 1];
+			ServerChatMessage msg = (*GlobalChat)[i - 1];
 
 			std::wstring senderName = msg.sender;
 			render::FragColor userColor;
