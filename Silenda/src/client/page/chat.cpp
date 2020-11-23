@@ -9,12 +9,16 @@ namespace Silenda
 	{
 		MTConsole::GetInstance()->attach(this);
 		MsgHandler::GetInstance()->attach(this);
+		NetClient::GetInstance()->attach(this);
 
 		m_ChatWindow = new ChatApp({ m_FormPos.x + 3, (m_FormPos.y + m_FormWidth) - 4, BACKGROUND_DEPTH });
 	}
 
 	ChatPage::~ChatPage()
 	{
+		NetClient::GetInstance()->Send({ NetMessageType::chatleave });
+
+		NetClient::GetInstance()->detach(this);
 		MsgHandler::GetInstance()->detach(this);
 		MTConsole::GetInstance()->detach(this);
 
@@ -57,6 +61,16 @@ namespace Silenda
 					commands.pop();
 				}
 			}
+			else if (controller == 6)
+			{
+				Page* login = GetConnected("SilendaLogin");
+
+				if (login != nullptr)
+				{
+					this->unload();
+					login->load();
+				}
+			}
 		}
 		m_Mtx.unlock();
 	}
@@ -64,6 +78,11 @@ namespace Silenda
 	void ChatPage::initPostLoad()
 	{
 		MTConsole::GetInstance()->SetMaxBufferSize(88);
+
+		// Join room and set name
+		std::string str = serialize(DisplayName);
+
+		NetClient::GetInstance()->Send({ NetMessageType::chatjoin, str });
 	}
 
 	render::MeshFrame ChatPage::OnRender()

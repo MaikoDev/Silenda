@@ -126,7 +126,7 @@ namespace Silenda
 			closesocket(m_ClientSocket);
 
 			// Notify any pages there has been a disconnect
-			notify(5);
+			this->notify(5);
 			return 1;
 		}
 
@@ -210,6 +210,9 @@ namespace Silenda
 		case NetMessageType::sv_uuidsend:
 			this->net_sv_uuidsend(msg.payload);
 			break;
+		case NetMessageType::chatjoin:
+			this->net_chatjoin(msg.payload);
+			break;
 		case NetMessageType::chatlog:
 			this->net_chatlog(msg.payload);
 			break;
@@ -273,6 +276,13 @@ namespace Silenda
 	{
 		FIO::GetInstance()->writeToFile("uuid.txt", param);
 		m_ClientUUID = param;
+	}
+
+	// Server sends back join status
+	const inline void NetClient::net_chatjoin(const std::string& param)
+	{
+		if (!stoi(param))
+			this->notify(6);
 	}
 
 	// Server sends a vector of ChatMessages

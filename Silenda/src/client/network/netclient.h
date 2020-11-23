@@ -50,6 +50,7 @@ namespace Silenda
 		const inline void net_sv_uuidrequest(const std::string& param = "");
 		const inline void net_sv_uuidsend(const std::string& param = "");
 
+		const inline void net_chatjoin(const std::string& param = "");
 		const inline void net_chatlog(const std::string& param = "");
 		const inline void net_chatmsg(const std::string& param = "");
 	private:

@@ -13,15 +13,25 @@ namespace SilendaServer
 		~ChatRoom() {};
 
 		const void push_back(const std::string& userUUID, const ClientChatMessage message);
+		const inline ServerChatMessage& back() const& { return m_ChatLog.back(); };
+
+		const bool join(const std::string& userUUID, const std::wstring& username);
+		const void leave(const std::string& userUUID);
+
+		const inline bool isActive(const std::string& userUUID) const& { return m_UserList.find(userUUID) != m_UserList.end(); };
 
 		const std::string genNewUUID(const UserLevel& role = UserLevel::user);
-		const bool findUUID(const std::string& uuid) { return (m_UserList.find(uuid) != m_UserList.end()); };
+		const bool findUUID(const std::string& uuid) { return (m_UserPermsList.find(uuid) != m_UserPermsList.end()); };
+
+		const inline std::vector<ServerChatMessage>& GetMessageLog() const& { return m_ChatLog; };
 	private:
 		std::string m_RoomName;
 
-		unsigned short m_NumOfConnections;
+		unsigned short m_MaxConnections;
 		std::vector<ServerChatMessage> m_ChatLog;
-		std::unordered_map<std::string, UserLevel> m_UserList;
+		std::unordered_map<std::string, UserLevel> m_UserPermsList;
+
+		std::unordered_map<std::string, std::wstring> m_UserList;
 	private:
 		ChatRoom();
 

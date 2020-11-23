@@ -9,6 +9,8 @@ enum NetMessageType
 	cl_pksend,
 	sv_pkrequest,
 
+	chatjoin,
+	chatleave,
 	chatlog,
 	chatmsg,
 

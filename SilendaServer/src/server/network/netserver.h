@@ -20,10 +20,15 @@ namespace SilendaServer
 
 		void decode(const SOCKET& client, const std::string& raw);
 
+		const inline void net_broadcast(const void (NetServer::*)(const SOCKET&, const std::string&), const std::string& param = "");
+
 		const inline void net_cl_pkvalidate(const SOCKET& client, const std::string& param = "");
 		const inline void net_cl_pksend(const SOCKET& client, const std::string& param = "");
 		const inline void net_cl_uuidsend(const SOCKET& client, const std::string& param = "");
-		const inline void net_chatmsg(const SOCKET& client, const std::string& param = "");
+		const inline void net_chatjoin(const SOCKET& client, const std::string& param = "");
+		const inline void net_chatleave(const SOCKET& client, const std::string& param = "");
+		const inline void net_chatmsgRecv(const SOCKET& client, const std::string& param = "");
+		const inline void net_chatmsgSend(const SOCKET& client, const std::string& param = "");
 
 		const std::string genAuthCode(const SOCKET& client, const unsigned int& authCodeLength);
 	private:

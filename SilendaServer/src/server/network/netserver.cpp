@@ -131,7 +131,11 @@ namespace SilendaServer
 						this->decode(sock, m_NetworkRaw);
 					}
 				}
+
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			}
+
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 	}
 
@@ -160,9 +164,26 @@ namespace SilendaServer
 		case NetMessageType::cl_uuidsend:
 			this->net_cl_uuidsend(client, msg.payload);
 			break;
-		case NetMessageType::chatmsg:
-			this->net_chatmsg(client, msg.payload);
+		case NetMessageType::chatjoin:
+			this->net_chatjoin(client, msg.payload);
 			break;
+		case NetMessageType::chatleave:
+			this->net_chatleave(client);
+			break;
+		case NetMessageType::chatmsg:
+			this->net_chatmsgRecv(client, msg.payload);
+			break;
+		}
+	}
+
+	const inline void NetServer::net_broadcast(const void (NetServer::*netFunc)(const SOCKET&, const std::string&), const std::string& param)
+	{
+		// Broadcast to other clients
+		for (int i = 0; i < m_FDMaster.fd_count; i++)
+		{
+			SOCKET outSock = m_FDMaster.fd_array[i];
+			if (outSock != m_ListeningSocket)
+				(this->*netFunc)(outSock, param);
 		}
 	}
 
@@ -207,13 +228,56 @@ namespace SilendaServer
 				m_ClientAuthMap[client].uuid = param;
 		}
 
-		this->Send(client, { NetMessageType::sv_uuidsend, ChatRoom::GetInstance()->genNewUUID() });
+		m_ClientAuthMap[client].uuid = ChatRoom::GetInstance()->genNewUUID();
+		this->Send(client, { NetMessageType::sv_uuidsend, m_ClientAuthMap[client].uuid });
+	}
+
+	// Client request to join chat room
+	const inline void NetServer::net_chatjoin(const SOCKET& client, const std::string& param)
+	{
+		ChatRoom* chatPtr = ChatRoom::GetInstance();
+		std::wstring displayName = deserialize<std::wstring>(param);
+
+		// Attempt to join the chat room and send back the join result to client.
+		bool joinResult = chatPtr->join(m_ClientAuthMap[client].uuid, displayName);
+		this->Send(client, { NetMessageType::chatjoin, std::to_string(joinResult) });
+		
+		if (joinResult)
+		{
+			// Retrieve chatlog and serialize it.
+			std::string str = serialize(chatPtr->GetMessageLog());
+
+			this->Send(client, { NetMessageType::chatlog, str });
+		}
+	}
+
+	// Client request to leave the chat room
+	const inline void NetServer::net_chatleave(const SOCKET& client, const std::string& param)
+	{
+		ChatRoom::GetInstance()->leave(m_ClientAuthMap[client].uuid);
 	}
 
 	// Client push's a message to the chat
-	const inline void NetServer::net_chatmsg(const SOCKET& client, const std::string& param)
+	const inline void NetServer::net_chatmsgRecv(const SOCKET& client, const std::string& param)
 	{
+		ChatRoom* chatPtr = ChatRoom::GetInstance();
+		if (chatPtr->isActive(m_ClientAuthMap[client].uuid))
+		{
+			// Deserialize ClientChatMessage;
+			ClientChatMessage msg = deserialize<ClientChatMessage>(param);
 
+			chatPtr->push_back(m_ClientAuthMap[client].uuid, msg);
+
+			this->net_broadcast(&NetServer::net_chatmsgSend);
+		}
+	}
+
+	const inline void NetServer::net_chatmsgSend(const SOCKET& client, const std::string& param)
+	{
+		// Serialize ServerChatMessage;
+		std::string str = serialize(ChatRoom::GetInstance()->back());
+
+		this->Send(client, { NetMessageType::chatmsg, str });
 	}
 
 	const std::string NetServer::genAuthCode(const SOCKET& client, const unsigned int& authCodeLength)
