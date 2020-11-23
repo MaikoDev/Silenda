@@ -1,8 +1,8 @@
 #pragma once
 
-#include "cl_userlevel.h"
+#include "userlevel.h"
 
-namespace Silenda
+namespace SilendaServer
 {
 	struct ServerChatMessage
 	{

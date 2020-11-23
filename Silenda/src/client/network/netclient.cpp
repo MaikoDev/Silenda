@@ -2,7 +2,10 @@
 #include "netclient.h"
 
 #include "../utils/iobserver.h"
+#include "utils/byte_cpy.h"
 #include "chat/cl_chat.h"
+#include "fileio/fio.h"
+#include "page/base.h"
 
 namespace Silenda
 {
@@ -12,6 +15,7 @@ namespace Silenda
 	NetClient::NetClient()
 	{
 		m_NetworkBuffer = new char[NETWORK_BUFFER_SIZE];
+		FIO::GetInstance()->readFromFile("uuid.txt", m_ClientUUID);
 	}
 
 	NetClient* NetClient::GetInstance()
@@ -144,7 +148,7 @@ namespace Silenda
 				networkstring = NetPacker::GetInstance()->compress(str);
 
 			// Send networkstring to server
-			int sendResult = send(m_ClientSocket, networkstring.c_str(), networkstring.size() + 1, 0);
+			int sendResult = send(m_ClientSocket, networkstring.c_str(), networkstring.size(), 0);
 		}
 	}
 
@@ -157,7 +161,7 @@ namespace Silenda
 
 			if (bytesReceived > 0)
 			{
-				m_NetworkRaw = std::string(m_NetworkBuffer, 0, bytesReceived);
+				byte_cpy(m_NetworkBuffer, bytesReceived, m_NetworkRaw);
 				this->decode(m_NetworkRaw);
 			}
 
@@ -183,25 +187,34 @@ namespace Silenda
 		switch (msg.identifier) 
 		{
 		case NetMessageType::sv_deny:
-			net_sv_deny();
+			this->net_sv_deny();
 			break;
 		case NetMessageType::sv_pkvalidate:
-			net_sv_pkvalidate(msg.payload);
+			this->net_sv_pkvalidate(msg.payload);
 			break;
 		case NetMessageType::sv_pksend:
-			net_sv_pksend(msg.payload);
+			this->net_sv_pksend(msg.payload);
 			break;
 		case NetMessageType::sv_pkrequest:
-			net_sv_pkrequest();
+			this->net_sv_pkrequest();
 			break;
 		case NetMessageType::sv_auth_passed:
-			net_sv_auth_passed();
+			this->net_sv_auth_passed();
+			break;
+		case NetMessageType::sv_auth_failed:
+			this->net_sv_auth_failed();
+			break;
+		case NetMessageType::sv_uuidrequest:
+			this->net_sv_uuidrequest(msg.payload);
+			break;
+		case NetMessageType::sv_uuidsend:
+			this->net_sv_uuidsend(msg.payload);
 			break;
 		case NetMessageType::chatlog:
-			net_chatlog(msg.payload);
+			this->net_chatlog(msg.payload);
 			break;
 		case NetMessageType::chatmsg:
-			net_chatmsg(msg.payload);
+			this->net_chatmsg(msg.payload);
 			break;
 		}
 	}
@@ -216,15 +229,9 @@ namespace Silenda
 	// Authentication from server was validated
 	const inline void NetClient::net_sv_pkvalidate(const std::string& param)
 	{
-		m_ServerAuthPassed = NetPacker::GetInstance()->GetPublicKey() == param;
-		if (!m_ServerAuthPassed) // if server sent the wrong client public key back or server auth message failed.
-		{
-			this->Send({ NetMessageType::cl_auth_failed });
-			this->Disconnect();
-			return;
-		}
+		m_ServerAuthPassed = true;
 
-		this->Send({ NetMessageType::cl_pkvalidate, NetPacker::GetInstance()->encrypt(m_ServerPublicKey, m_ServerPublicKey) });
+		this->Send({ NetMessageType::cl_pkvalidate, param });
 	}
 
 	// Receiving server's public key
@@ -246,6 +253,26 @@ namespace Silenda
 	{
 		// notify all Pages that NetClient is ready to start processing data to the server.
 		G_ClientAuth = true;
+	}
+
+	// Server's final authentication message showing that handshake failed
+	const inline void NetClient::net_sv_auth_failed(const std::string& param)
+	{
+		G_ClientAuth = false;
+		BaseRunningState = false;
+	}
+
+	// Server is requesting client to send a uuid to confirm identity
+	const inline void NetClient::net_sv_uuidrequest(const std::string& param)
+	{
+		this->Send({ NetMessageType::cl_uuidsend, m_ClientUUID });
+	}
+
+	// Server is sending a newly generated uuid
+	const inline void NetClient::net_sv_uuidsend(const std::string& param)
+	{
+		FIO::GetInstance()->writeToFile("uuid.txt", param);
+		m_ClientUUID = param;
 	}
 
 	// Server sends a vector of ChatMessages

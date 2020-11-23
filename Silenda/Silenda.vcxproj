@@ -96,6 +96,7 @@
   <ItemGroup>
     <ClCompile Include="src\client\console\msghandler.cpp" />
     <ClCompile Include="src\client\console\mtc.cpp" />
+    <ClCompile Include="src\client\fileio\fio.cpp" />
     <ClCompile Include="src\client\network\chat\cl_chat.cpp" />
     <ClCompile Include="src\client\network\netclient.cpp" />
     <ClCompile Include="src\client\network\security\netpacker.cpp" />
@@ -120,6 +121,7 @@
   <ItemGroup>
     <ClInclude Include="src\client\console\msghandler.h" />
     <ClInclude Include="src\client\console\mtc.h" />
+    <ClInclude Include="src\client\fileio\fio.h" />
     <ClInclude Include="src\client\network\chat\cl_chat.h" />
     <ClInclude Include="src\client\network\chat\cl_message.h" />
     <ClInclude Include="src\client\network\chat\cl_userlevel.h" />
@@ -144,6 +146,7 @@
     <ClInclude Include="src\client\render\renderer.h" />
     <ClInclude Include="src\client\render\types.h" />
     <ClInclude Include="src\client\SilendaClient.h" />
+    <ClInclude Include="src\client\utils\byte_cpy.h" />
     <ClInclude Include="src\client\utils\iobservable.h" />
     <ClInclude Include="src\client\utils\iobserver.h" />
     <ClInclude Include="src\client\utils\row_major.h" />

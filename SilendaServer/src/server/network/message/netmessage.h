@@ -2,7 +2,7 @@
 
 #include "types.h"
 
-namespace Silenda
+namespace SilendaServer
 {
 	struct NetworkMessage
 	{
@@ -14,4 +14,3 @@ namespace Silenda
 		MSGPACK_DEFINE(identifier, payload);
 	};
 }
-

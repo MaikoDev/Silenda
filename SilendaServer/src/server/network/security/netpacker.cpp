@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "netpacker.h"
 
-namespace Silenda
+namespace SilendaServer
 {
 	NetPacker* NetPacker::m_Instance = nullptr;
 
@@ -66,8 +66,8 @@ namespace Silenda
 		// Decryption
 		CryptoPP::RSAES_OAEP_SHA_Decryptor decryptor(m_PrivateKey);
 
-		CryptoPP::StringSource ss(decompressed, true, 
-			new CryptoPP::PK_DecryptorFilter(m_RandPool, decryptor, 
+		CryptoPP::StringSource ss(decompressed, true,
+			new CryptoPP::PK_DecryptorFilter(m_RandPool, decryptor,
 				new CryptoPP::StringSink(retString)
 			)
 		);

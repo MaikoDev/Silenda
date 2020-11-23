@@ -92,7 +92,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\server\chat\chatroom.cpp" />
     <ClCompile Include="src\server\network\netserver.cpp" />
+    <ClCompile Include="src\server\network\security\netpacker.cpp" />
     <ClCompile Include="src\server\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -103,8 +105,19 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\server\chat\chatroom.h" />
+    <ClInclude Include="src\server\chat\chatuser.h" />
+    <ClInclude Include="src\server\network\chat\message.h" />
+    <ClInclude Include="src\server\network\chat\userlevel.h" />
+    <ClInclude Include="src\server\network\message\netmessage.h" />
+    <ClInclude Include="src\server\network\message\types.h" />
     <ClInclude Include="src\server\network\netserver.h" />
+    <ClInclude Include="src\server\network\security\netpacker.h" />
+    <ClInclude Include="src\server\network\security\netuserauth.h" />
     <ClInclude Include="src\server\pch.h" />
+    <ClInclude Include="src\server\SilendaServer.h" />
+    <ClInclude Include="src\server\utils\byte_cpy.h" />
+    <ClInclude Include="src\server\utils\uuid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

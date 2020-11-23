@@ -15,6 +15,16 @@ namespace render
 		SetConsoleTitle(LPCSTR("Silenda"));
 		DWORD style = GetWindowLong(_hwnd, GWL_STYLE);
 
+		CONSOLE_FONT_INFOEX cfi;
+		cfi.cbSize = sizeof(cfi);
+		cfi.nFont = 0;
+		cfi.dwFontSize.X = 8;
+		cfi.dwFontSize.Y = 18;
+		cfi.FontFamily = FF_DONTCARE;
+		cfi.FontWeight = FW_NORMAL;
+		wcscpy_s(cfi.FaceName, _countof(cfi.FaceName), L"Consolas");
+		SetCurrentConsoleFontEx(_hOut, FALSE, &cfi);
+
 		style &= ~WS_MAXIMIZEBOX;
 		style &= ~WS_MINIMIZEBOX;
 		style &= ~WS_HSCROLL;

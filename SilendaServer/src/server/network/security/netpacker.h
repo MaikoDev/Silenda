@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Silenda
+namespace SilendaServer
 {
 	template<class T>
 	const inline std::string serialize(const T& obj)
@@ -56,8 +56,8 @@ namespace Silenda
 		const bool validate(const std::string& data);
 		const bool genKeys(unsigned int keySize);
 
-		const inline unsigned int& getKeySizeInBytes() const& { return m_KeySizeInBytes; };
-		const inline unsigned int& getPlainSizeLimit() const& { return m_PlainSizeLimit; };
+		const inline unsigned int& getKeySizeInBytes() const & { return m_KeySizeInBytes; };
+		const inline unsigned int& getPlainSizeLimit() const & { return m_PlainSizeLimit; };
 	private:
 		const inline bool IsPowTwo(const unsigned int& num) { return (num != 0) && ((num & (num - 1)) == 0); };
 	private:

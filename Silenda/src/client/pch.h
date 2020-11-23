@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <stdio.h>
 
 #include <sstream>
 #include <string>
@@ -32,3 +33,4 @@
 #include "cryptopp/osrng.h"
 #include "cryptopp/gzip.h"
 #include "cryptopp/rsa.h"
+#include "cryptopp/hex.h"

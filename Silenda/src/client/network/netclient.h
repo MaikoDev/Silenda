@@ -46,6 +46,9 @@ namespace Silenda
 		const inline void net_sv_pksend(const std::string& param = "");
 		const inline void net_sv_pkrequest(const std::string& param = "");
 		const inline void net_sv_auth_passed(const std::string& param = "");
+		const inline void net_sv_auth_failed(const std::string& param = "");
+		const inline void net_sv_uuidrequest(const std::string& param = "");
+		const inline void net_sv_uuidsend(const std::string& param = "");
 
 		const inline void net_chatlog(const std::string& param = "");
 		const inline void net_chatmsg(const std::string& param = "");
@@ -56,6 +59,7 @@ namespace Silenda
 
 		char* m_NetworkBuffer;
 		SOCKET m_ClientSocket;
+		std::string m_ClientUUID = "";
 		std::string m_NetworkRaw;
 
 		std::thread m_NetworkWorker;

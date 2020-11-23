@@ -1,13 +1,16 @@
 #include "pch.h"
 
-#include "client/SilendaClient.h"
+#include "SilendaClient.h"
 
 using namespace render;
 
 int main(int argc, char** argv)
 {
-	Silenda::NetPacker* packer = Silenda::NetPacker::GetInstance();
-	packer->genKeys(4096);
+	if (!Silenda::SilendaInit())
+	{
+		std::cin.get();
+		return 0;
+	}
 
 	Silenda::MTConsole* consolePtr = Silenda::MTConsole::GetInstance();
 	Silenda::MsgHandler* handlerPtr = Silenda::MsgHandler::GetInstance();
@@ -32,6 +35,8 @@ int main(int argc, char** argv)
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
+
+	render::ClearScreen();
 		 
 	return 0;
 }

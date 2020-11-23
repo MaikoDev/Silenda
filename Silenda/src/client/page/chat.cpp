@@ -64,18 +64,6 @@ namespace Silenda
 	void ChatPage::initPostLoad()
 	{
 		MTConsole::GetInstance()->SetMaxBufferSize(88);
-		int connection = NetClient::GetInstance()->Connect("127.0.0.1", 54000);
-
-		if (connection == WSAECONNREFUSED)
-		{
-			Page* login = GetConnected("SilendaLogin");
-
-			if (login != nullptr)
-			{
-				this->unload();
-				login->load();
-			}
-		}
 	}
 
 	render::MeshFrame ChatPage::OnRender()
