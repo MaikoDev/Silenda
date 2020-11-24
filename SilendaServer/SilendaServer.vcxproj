@@ -59,7 +59,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\server;$(SolutionDir)Dependencies\boost\include;$(SolutionDir)Dependencies\msgpack\include;$(SolutionDir)Dependencies\cryptopp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\server;$(SolutionDir)Dependencies\boost\include;$(SolutionDir)Dependencies\cryptopp\include;$(SolutionDir)Dependencies\json\include;$(SolutionDir)Dependencies\msgpack\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -80,7 +80,7 @@
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\server;$(SolutionDir)Dependencies\boost\include;$(SolutionDir)Dependencies\msgpack\include;$(SolutionDir)Dependencies\cryptopp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\server;$(SolutionDir)Dependencies\boost\include;$(SolutionDir)Dependencies\cryptopp\include;$(SolutionDir)Dependencies\json\include;$(SolutionDir)Dependencies\msgpack\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -93,6 +93,7 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\server\chat\chatroom.cpp" />
+    <ClCompile Include="src\server\fileio\fio.cpp" />
     <ClCompile Include="src\server\network\netserver.cpp" />
     <ClCompile Include="src\server\network\security\netpacker.cpp" />
     <ClCompile Include="src\server\pch.cpp">
@@ -107,6 +108,7 @@
   <ItemGroup>
     <ClInclude Include="src\server\chat\chatroom.h" />
     <ClInclude Include="src\server\chat\chatuser.h" />
+    <ClInclude Include="src\server\fileio\fio.h" />
     <ClInclude Include="src\server\network\chat\message.h" />
     <ClInclude Include="src\server\network\chat\userlevel.h" />
     <ClInclude Include="src\server\network\message\netmessage.h" />

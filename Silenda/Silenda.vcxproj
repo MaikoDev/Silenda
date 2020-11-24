@@ -58,7 +58,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\client;$(SolutionDir)Dependencies\boost\include;$(SolutionDir)Dependencies\msgpack\include;$(SolutionDir)Dependencies\cryptopp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\client;$(SolutionDir)Dependencies\boost\include;$(SolutionDir)Dependencies\msgpack\include;$(SolutionDir)Dependencies\json\include;$(SolutionDir)Dependencies\cryptopp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN; _MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -80,7 +80,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\client;$(SolutionDir)Dependencies\boost\include;$(SolutionDir)Dependencies\msgpack\include;$(SolutionDir)Dependencies\cryptopp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\client;$(SolutionDir)Dependencies\boost\include;$(SolutionDir)Dependencies\msgpack\include;$(SolutionDir)Dependencies\json\include;$(SolutionDir)Dependencies\cryptopp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN; _MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -119,6 +119,7 @@
     <ClCompile Include="src\cl_main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\client\console\msghandler.h" />
     <ClInclude Include="src\client\console\mtc.h" />
     <ClInclude Include="src\client\fileio\fio.h" />
@@ -154,6 +155,12 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\menu.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Silenda.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Users\Downloads\silenda.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

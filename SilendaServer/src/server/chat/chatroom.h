@@ -10,7 +10,7 @@ namespace SilendaServer
 	{
 	public:
 		static ChatRoom* GetInstance();
-		~ChatRoom() {};
+		~ChatRoom();
 
 		const void push_back(const std::string& userUUID, const ClientChatMessage message);
 		const inline ServerChatMessage& back() const& { return m_ChatLog.back(); };

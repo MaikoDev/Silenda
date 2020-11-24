@@ -34,3 +34,5 @@
 #include "cryptopp/gzip.h"
 #include "cryptopp/rsa.h"
 #include "cryptopp/hex.h"
+
+#include "nlohmann/json.hpp"

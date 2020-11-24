@@ -9,7 +9,12 @@ namespace SilendaServer
 
 	ChatRoom::ChatRoom() : m_MaxConnections(30)
 	{
-	
+
+	}
+
+	ChatRoom::~ChatRoom()
+	{
+
 	}
 
 	ChatRoom* ChatRoom::GetInstance()

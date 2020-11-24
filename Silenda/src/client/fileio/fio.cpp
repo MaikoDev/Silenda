@@ -15,7 +15,7 @@ namespace Silenda
 
 	const bool FIO::readFromFile(const std::string& fileDir, std::string& dest)
 	{
-		fopen_s(&m_File, fileDir.c_str(), "r");
+		fopen_s(&m_File, fileDir.c_str(), "rt");
 
 		if (m_File == NULL)
 			return 0;
@@ -31,7 +31,7 @@ namespace Silenda
 
 			// Copy file content to buffer
 			m_ReadSize = fread(m_FileBuffer, sizeof(char), m_FileSize, m_File);
-			if (m_ReadSize != m_FileSize)
+			if (ferror(m_File))
 			{
 				free(m_FileBuffer);
 				m_FileBuffer = nullptr;
@@ -56,7 +56,7 @@ namespace Silenda
 
 	const void FIO::writeToFile(const std::string& fileDir, const std::string& content)
 	{
-		fopen_s(&m_File, fileDir.c_str(), "w");
+		fopen_s(&m_File, fileDir.c_str(), "wt");
 		if (m_File != NULL)
 		{
 			fwrite(content.c_str(), sizeof(char), content.size(), m_File);

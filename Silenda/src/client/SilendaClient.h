@@ -23,7 +23,7 @@ namespace Silenda
 
 			printf("\nConnecting to network...");
 
-			int connection = NetClient::GetInstance()->Connect("192.168.1.17", 54000);
+			int connection = NetClient::GetInstance()->Connect("127.0.0.1", 54000);
 
 			if (connection == WSAECONNREFUSED)
 			{
