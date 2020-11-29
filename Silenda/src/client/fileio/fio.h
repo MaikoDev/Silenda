@@ -1,6 +1,6 @@
 #pragma once
 
-namespace SilendaServer
+namespace Silenda
 {
 	class FIO
 	{

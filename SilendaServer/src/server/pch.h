@@ -15,6 +15,12 @@
 #include <chrono>
 #include <ctime>
 
+#include <thread>
+#include <mutex>
+
+#define NOMINMAX
+#include <Windows.h>
+
 #include <WS2tcpip.h>
 #include <iphlpapi.h>
 #pragma comment(lib, "ws2_32.lib")

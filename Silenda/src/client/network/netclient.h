@@ -8,6 +8,8 @@
 
 namespace Silenda
 {
+	struct ClientCallback;
+
 	struct NetSession
 	{
 		bool valid = false;
@@ -36,6 +38,9 @@ namespace Silenda
 		void Send(const NetworkMessage msg);
 
 		const inline void config(const std::string& serverIP, const unsigned int& serverPort) { m_ServerSession.address = serverIP; m_ServerSession.listenport = serverPort; m_ServerSession.valid = true; };
+		const void handleCallbacks();
+
+		const inline unsigned short& GetLatency() const& { return m_NetworkLatency; };
 	private:
 		void OnReceive();
 
@@ -53,6 +58,14 @@ namespace Silenda
 		const inline void net_chatjoin(const std::string& param = "");
 		const inline void net_chatlog(const std::string& param = "");
 		const inline void net_chatmsg(const std::string& param = "");
+
+		const inline void net_healthstart(const std::string& param = "");
+		const inline void net_healthresp(const std::string& param = "");
+
+		const inline void heartbeat(const std::string& param = "");
+	private:
+		const void scheduleCallback(const std::string& identifier, const float& delay, const unsigned int& repetitions, const void (NetClient::* func)(const std::string&), const std::string& param = "");
+		const inline void removeCallback(const std::string& identifier) { m_CallbackList.erase(identifier); };
 	private:
 		NetSession m_ServerSession;
 		std::string m_ServerPublicKey;
@@ -62,11 +75,30 @@ namespace Silenda
 		SOCKET m_ClientSocket;
 		std::string m_ClientUUID = "";
 		std::string m_NetworkRaw;
+		unsigned short m_NetworkLatency = 0;
 
 		std::thread m_NetworkWorker;
 		bool m_ThreadRunning = false;
 	private:
+		std::unordered_map<std::string, ClientCallback> m_CallbackList;
+	private:
 		NetClient();
 		static NetClient* m_Instance;
+	};
+
+	struct CallbackTime
+	{
+		std::chrono::high_resolution_clock::time_point initial;
+		std::chrono::milliseconds duration;
+	};
+
+	struct ClientCallback
+	{
+		ClientCallback(const CallbackTime delayTime, const unsigned int& repeatCount, const void (NetClient::* func)(const std::string&), const std::string& funcParam = "") : delay(delayTime), repetitions(repeatCount), function(func), param(funcParam) {};
+
+		CallbackTime delay;
+		__int64 repetitions;
+		const void (NetClient::* function)(const std::string&);
+		std::string param;
 	};
 }

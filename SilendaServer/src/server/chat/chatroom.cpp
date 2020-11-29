@@ -1,6 +1,7 @@
 #include "pch.h"
 
 #include "chatroom.h"
+#include "fileio/fio.h"
 #include "utils/uuid.h"
 
 namespace SilendaServer
@@ -9,12 +10,20 @@ namespace SilendaServer
 
 	ChatRoom::ChatRoom() : m_MaxConnections(30)
 	{
+		FIO* IOptr = FIO::GetInstance();
 
+		FileChatLog chatlog;
+		FilePermList perms;
+
+		IOptr->readObjFromFile("messagelog.txt", chatlog);
+		IOptr->readObjFromFile("perms.cfg", perms);
+
+		m_ChatLog = chatlog.log;
+		m_UserPermsList = perms.permlist;
 	}
 
 	ChatRoom::~ChatRoom()
 	{
-
 	}
 
 	ChatRoom* ChatRoom::GetInstance()
@@ -52,6 +61,20 @@ namespace SilendaServer
 			m_UserList.erase(iter);
 	}
 
+	const void ChatRoom::save()
+	{
+		FIO* IOptr = FIO::GetInstance();
+
+		FileChatLog chatlog;
+		chatlog.log = m_ChatLog;
+
+		FilePermList perms;
+		perms.permlist = m_UserPermsList;
+
+		IOptr->writeObjToFile("messagelog.txt", chatlog);
+		IOptr->writeObjToFile("perms.cfg", perms);
+	}
+
 	const std::string ChatRoom::genNewUUID(const UserLevel& role)
 	{
 		std::string userUUID;
@@ -66,4 +89,27 @@ namespace SilendaServer
 		return userUUID;
 	}
 
+	void to_json(nlohmann::json& j, const FileChatLog& chatlog)
+	{
+		j = nlohmann::json{
+			{ "log", chatlog.log }
+		};
+	}
+
+	void to_json(nlohmann::json& j, const FilePermList& perms)
+	{
+		j = nlohmann::json{
+			{ "perms", perms.permlist }
+		};
+	}
+
+	void from_json(const nlohmann::json& j, FileChatLog& chatlog)
+	{
+		j.at("log").get_to(chatlog.log);
+	}
+
+	void from_json(const nlohmann::json& j, FilePermList& perms)
+	{
+		j.at("perms").get_to(perms.permlist);
+	}
 }

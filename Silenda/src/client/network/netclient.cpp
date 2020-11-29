@@ -165,9 +165,50 @@ namespace Silenda
 				this->decode(m_NetworkRaw);
 			}
 
+			this->handleCallbacks();
+
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 		} while (m_ThreadRunning);
+	}
+
+	const void NetClient::handleCallbacks()
+	{
+		auto iter = m_CallbackList.begin();
+		while (iter != m_CallbackList.end())
+		{
+			const __int64 currentTime = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+
+
+			// Call the function pointer when call time is reached or past.
+			ClientCallback call = iter->second;
+			const __int64 callTime = (call.delay.initial + call.delay.duration).time_since_epoch().count();
+
+			if (callTime <= currentTime)
+			{
+				switch (call.repetitions)
+				{
+				case -1: // Done repeating, remove callback from list and continue.
+					iter = m_CallbackList.erase(iter);
+					continue;
+				case 0: // Infinite repeat do nothing.
+					break;
+				case 1: // If repeat has reached one set to -1 to end cycle.
+					iter->second.repetitions = -1;
+					break;
+				default: // Continue decrementing.
+					iter->second.repetitions--;
+					break;
+				}
+
+				(this->*(call.function))(call.param);
+
+				// Reset initial time for delay
+				iter->second.delay.initial = std::chrono::high_resolution_clock::now();
+			}
+
+			iter++;
+		}
 	}
 
 	void NetClient::decode(const std::string& raw)
@@ -218,6 +259,12 @@ namespace Silenda
 			break;
 		case NetMessageType::chatmsg:
 			this->net_chatmsg(msg.payload);
+			break;
+		case NetMessageType::healthstart:
+			this->net_healthstart();
+			break;
+		case NetMessageType::healthresp:
+			this->net_healthresp(msg.payload);
 			break;
 		}
 	}
@@ -307,4 +354,41 @@ namespace Silenda
 		G_ChatLog::GetInstance()->push_back(message);
 	}
 
+	// Server is initiating client-server heartbeat.
+	const inline void NetClient::net_healthstart(const std::string& param)
+	{
+		scheduleCallback("hBeat", 2.0f, 0, &NetClient::heartbeat);
+	}
+
+	// Server echo's back initial heartbeat from client.
+	const inline void NetClient::net_healthresp(const std::string& param)
+	{
+		long long prevTime = deserialize<long long>(param);
+
+		std::chrono::high_resolution_clock::duration d(prevTime);
+		std::chrono::high_resolution_clock::time_point previous(d);
+
+		m_NetworkLatency =
+			std::chrono::duration_cast<std::chrono::duration<unsigned short, std::milli>>(
+				std::chrono::high_resolution_clock::now() - previous
+				).count();
+	}
+
+	// Sending initial heartbeat to server.
+	const inline void NetClient::heartbeat(const std::string& param)
+	{
+		// Serialize current time
+		std::string str = serialize(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+
+		this->Send({ NetMessageType::healthresp, str });
+	}
+
+	const void NetClient::scheduleCallback(const std::string& identifier, const float& delay, const unsigned int& repetitions, const void (NetClient::* func)(const std::string&), const std::string& param)
+	{
+		int milSec = (delay * 1000.0f);
+
+		ClientCallback callback({ std::chrono::high_resolution_clock::now(),  std::chrono::milliseconds(milSec) }, repetitions, func, param);
+
+		m_CallbackList.insert({ identifier, callback });
+	}
 }

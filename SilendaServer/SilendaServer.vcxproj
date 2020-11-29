@@ -61,6 +61,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)src\server;$(SolutionDir)Dependencies\boost\include;$(SolutionDir)Dependencies\cryptopp\include;$(SolutionDir)Dependencies\json\include;$(SolutionDir)Dependencies\msgpack\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN; _MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -70,18 +71,19 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir)src\server;$(SolutionDir)Dependencies\boost\include;$(SolutionDir)Dependencies\cryptopp\include;$(SolutionDir)Dependencies\json\include;$(SolutionDir)Dependencies\msgpack\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN; _MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -94,6 +96,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\server\chat\chatroom.cpp" />
     <ClCompile Include="src\server\fileio\fio.cpp" />
+    <ClCompile Include="src\server\network\chat\message.cpp" />
     <ClCompile Include="src\server\network\netserver.cpp" />
     <ClCompile Include="src\server\network\security\netpacker.cpp" />
     <ClCompile Include="src\server\pch.cpp">
@@ -119,6 +122,7 @@
     <ClInclude Include="src\server\pch.h" />
     <ClInclude Include="src\server\SilendaServer.h" />
     <ClInclude Include="src\server\utils\byte_cpy.h" />
+    <ClInclude Include="src\server\utils\timing.h" />
     <ClInclude Include="src\server\utils\uuid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -12,20 +12,21 @@ namespace SilendaServer
 		const void writeToFile(const std::string& fileDir, const std::string& content);
 
 		template<class T>
-		const bool readObjFromFile(const std::string& fileDir, T& obj)
+		const bool readObjFromFile(const std::string& fileDir, T& objClass)
 		{
 			std::string str;
 			if (!this->readFromFile(fileDir, str))
 				return 0;
 
 			nlohmann::json j = nlohmann::json::parse(str);
-			obj = j;
+			
+			objClass = j;
 		}
 
 		template<class T>
-		const void writeObjToFile(const std::string& fileDir, const T& obj)
+		const void writeObjToFile(const std::string& fileDir, const T& objClass)
 		{
-			nlohmann::json j = obj;
+			nlohmann::json j = objClass;
 			std::string str = j.dump(4);
 
 			this->writeToFile(fileDir, str);

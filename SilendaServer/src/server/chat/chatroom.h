@@ -17,6 +17,7 @@ namespace SilendaServer
 
 		const bool join(const std::string& userUUID, const std::wstring& username);
 		const void leave(const std::string& userUUID);
+		const void save();
 
 		const inline bool isActive(const std::string& userUUID) const& { return m_UserList.find(userUUID) != m_UserList.end(); };
 
@@ -24,6 +25,8 @@ namespace SilendaServer
 		const bool findUUID(const std::string& uuid) { return (m_UserPermsList.find(uuid) != m_UserPermsList.end()); };
 
 		const inline std::vector<ServerChatMessage>& GetMessageLog() const& { return m_ChatLog; };
+		const inline unsigned int GetConnectionCount() const & { return m_UserList.size(); };
+		const inline unsigned short GetMaxConnectCount() const & { return m_MaxConnections; };
 	private:
 		std::string m_RoomName;
 
@@ -37,4 +40,15 @@ namespace SilendaServer
 
 		static ChatRoom* m_Instance;
 	};
+
+	struct FileChatLog
+	{
+		std::vector<ServerChatMessage> log;
+	};
+
+	struct FilePermList
+	{
+		std::unordered_map<std::string, UserLevel> permlist;
+	};
+
 }

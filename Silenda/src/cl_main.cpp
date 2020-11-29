@@ -33,6 +33,8 @@ int main(int argc, char** argv)
 		rPtr->draw(Silenda::LoadedPage);
 		rPtr->flush();
 
+		Silenda::NetClient::GetInstance()->handleCallbacks();
+
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 

@@ -50,6 +50,7 @@ namespace render
 		void flush();
 
 		void SetWindowSize(const int& width, const int& height);
+		const inline void SetTitle(const char* title) { SetConsoleTitle(LPCSTR(title)); };
 	private:
 		void setCursorPos(const ushort& x, const ushort& y);
 		void showCursor(const bool& showFlag);

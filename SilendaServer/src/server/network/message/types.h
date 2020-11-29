@@ -14,6 +14,9 @@ enum NetMessageType
 	chatlog,
 	chatmsg,
 
+	healthstart,
+	healthresp,
+
 	sv_auth_passed,
 	sv_auth_failed,
 

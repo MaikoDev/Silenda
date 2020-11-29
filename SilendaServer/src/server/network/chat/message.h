@@ -26,4 +26,6 @@ namespace SilendaServer
 		MSGPACK_DEFINE(sender, message);
 	};
 
+	void to_json(nlohmann::json& j, const ServerChatMessage& message);
+	void from_json(const nlohmann::json& j, ServerChatMessage& message);
 }

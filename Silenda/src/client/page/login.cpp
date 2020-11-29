@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "login.h"
 
+#include "network/netclient.h"
+#include "render/renderer.h"
+
 namespace Silenda
 {
 	LoginPage::LoginPage() : Page(117, 29) 
@@ -66,6 +69,10 @@ namespace Silenda
 		m_Mtx.lock();
 
 		m_Mesh->reset();
+
+		std::ostringstream ss;
+		ss << "Silenda " << "Latency: " << NetClient::GetInstance()->GetLatency() << " ms";
+		render::Renderer::GetInstance()->SetTitle(ss.str().c_str());
 
 		m_Mesh->DrawRect(m_FormLength, m_FormWidth, render::COLOR_DARK_GREEN, render::COLOR_BLACK, m_FormPos, TOP_SHADOWED | RIGHT_SHADOWED, true);
 
