@@ -12,11 +12,13 @@
 #include <unordered_map>
 
 #include <memory>
+#include <functional>
 
 #include <chrono>
 #include <ctime>
 
 #include <thread>
+#include <future>
 #include <mutex>
 
 #define NOMINMAX
@@ -26,6 +28,8 @@
 
 #include <WS2tcpip.h>
 #pragma comment(lib, "ws2_32.lib")
+
+#include "boost/any.hpp"
 
 #include "msgpack.hpp"
 

@@ -116,6 +116,8 @@
     <ClCompile Include="src\client\render\mesh\mesh.cpp" />
     <ClCompile Include="src\client\render\rbuffer.cpp" />
     <ClCompile Include="src\client\render\renderer.cpp" />
+    <ClCompile Include="src\client\thread\pipedworker.cpp" />
+    <ClCompile Include="src\client\thread\threadpool.cpp" />
     <ClCompile Include="src\cl_main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +149,9 @@
     <ClInclude Include="src\client\render\renderer.h" />
     <ClInclude Include="src\client\render\types.h" />
     <ClInclude Include="src\client\SilendaClient.h" />
+    <ClInclude Include="src\client\thread\pipedworker.h" />
+    <ClInclude Include="src\client\thread\pipeline.h" />
+    <ClInclude Include="src\client\thread\threadpool.h" />
     <ClInclude Include="src\client\utils\byte_cpy.h" />
     <ClInclude Include="src\client\utils\iobservable.h" />
     <ClInclude Include="src\client\utils\iobserver.h" />
