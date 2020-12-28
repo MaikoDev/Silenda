@@ -96,6 +96,7 @@
   <ItemGroup>
     <ClCompile Include="src\client\console\msghandler.cpp" />
     <ClCompile Include="src\client\console\mtc.cpp" />
+    <ClCompile Include="src\client\event\EventDispatcher.cpp" />
     <ClCompile Include="src\client\fileio\fio.cpp" />
     <ClCompile Include="src\client\network\chat\cl_chat.cpp" />
     <ClCompile Include="src\client\network\netclient.cpp" />
@@ -124,6 +125,11 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\client\console\msghandler.h" />
     <ClInclude Include="src\client\console\mtc.h" />
+    <ClInclude Include="src\client\event\Event.h" />
+    <ClInclude Include="src\client\event\EventDispatcher.h" />
+    <ClInclude Include="src\client\event\EventListener.h" />
+    <ClInclude Include="src\client\event\KeyEvent.h" />
+    <ClInclude Include="src\client\event\MouseEvent.h" />
     <ClInclude Include="src\client\fileio\fio.h" />
     <ClInclude Include="src\client\network\chat\cl_chat.h" />
     <ClInclude Include="src\client\network\chat\cl_message.h" />
@@ -152,6 +158,7 @@
     <ClInclude Include="src\client\thread\pipedworker.h" />
     <ClInclude Include="src\client\thread\pipeline.h" />
     <ClInclude Include="src\client\thread\threadpool.h" />
+    <ClInclude Include="src\client\thread\threadprocess.h" />
     <ClInclude Include="src\client\utils\byte_cpy.h" />
     <ClInclude Include="src\client\utils\iobservable.h" />
     <ClInclude Include="src\client\utils\iobserver.h" />

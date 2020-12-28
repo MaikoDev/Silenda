@@ -15,13 +15,13 @@ namespace Silenda
 
 	enum EventCategory
 	{
-		None = 0,
-		EventCategoryApplication = 1 << 0,
-		EventCategoryNetwork = 1 << 1,
-		EventCategoryInput = 1 << 2,
-		EventCategoryKeyboard = 1 << 3,
-		EventCategoryMouse = 1 << 4,
-		EventCategoryMouseButton = 1 << 5
+		None                      = 0,
+		EventCategoryApplication  = 1 << 0,
+		EventCategoryNetwork      = 1 << 1,
+		EventCategoryInput        = 1 << 2,
+		EventCategoryKeyboard     = 1 << 3,
+		EventCategoryMouse        = 1 << 4,
+		EventCategoryMouseButton  = 1 << 5
 	};
 
 	#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; }\
@@ -55,14 +55,12 @@ namespace Silenda
 		friend class EventDispatcher;
 	public:
 		Event() {};
-		Event(EventBase* basePtr) { this->m_EventBasePtr.reset(basePtr); };
 		Event(std::shared_ptr<EventBase> basePtr) : m_EventBasePtr(basePtr) {};
 		Event(const Event& e) : m_EventBasePtr(e.m_EventBasePtr) {};
 		Event(Event&& e) noexcept { this->m_EventBasePtr.swap(e.m_EventBasePtr); };
 
 		~Event() {};
 
-		Event& operator=(EventBase* basePtr) { this->m_EventBasePtr.reset(basePtr); };
 		Event& operator=(std::shared_ptr<EventBase> basePtr) { this->m_EventBasePtr = basePtr; };
 		Event& operator=(const Event& e) { this->m_EventBasePtr = e.m_EventBasePtr; };
 		Event& operator=(Event&& e) noexcept { this->m_EventBasePtr.reset(); this->m_EventBasePtr.swap(e.m_EventBasePtr); };

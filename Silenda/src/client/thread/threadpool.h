@@ -22,6 +22,11 @@ namespace Silenda
 
 			m_ProcessQueue.push(processFunc);
 		}
+
+		void scheduleProcess(std::function<void()> processFunc)
+		{
+			m_ProcessQueue.push(processFunc);
+		}
 	private:
 		void initWorkers();
 		void controllerThread();

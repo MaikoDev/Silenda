@@ -2,9 +2,8 @@
 
 #include "SilendaClient.h"
 
-#include "thread/threadpool.h"
-#include "thread/pipeline.h"
-#include "thread/pipedworker.h"
+#include "event/KeyEvent.h"
+#include "event/EventDispatcher.h"
 
 using namespace render;
 
@@ -18,23 +17,72 @@ void DoOtherStuff(char h, std::string name)
 
 }
 
+bool doEventStuff(Silenda::KeyPressedEvent& e)
+{
+	return 0;
+}
+
+class TestClass : public Silenda::IEventListener
+{
+public:
+	void onEvent(Silenda::Event& e)
+	{
+		Silenda::EventDispatcher::GetInstance()->dispatch<Silenda::KeyPressedEvent>(std::bind(&TestClass::onKeyPressEvent, this, std::placeholders::_1, std::placeholders::_2), e);
+	}
+private:
+	void onKeyPressEvent(bool& handled, Silenda::KeyPressedEvent& e)
+	{
+		printf("Hello EventDispatcher!");
+
+		handled = true;
+	}
+};
+
 int main(int argc, char** argv)
 {
-	std::function<void()>func = std::bind(&DoStuff, 2, false);
+	auto dispatcherPtr = Silenda::EventDispatcher::GetInstance();
 
-	auto tp = Silenda::ThreadPoolExecutor::GetInstance();
-	tp->scheduleProcess(DoStuff, 345, false);
-	tp->scheduleProcess(DoOtherStuff, 'j', "Hey ThreadPool nice to see you working!");
+	Silenda::KeyPressedEvent myKeyEvent(73, 9999);
+
+	TestClass tul;
+
+	dispatcherPtr->attach<Silenda::KeyPressedEvent>(&tul);
+	
+	//dispatcherPtr->hookAdd<Silenda::KeyPressedEvent>("myIdentifier", std::bind(&doEventStuff, std::placeholders::_1));
+
+	dispatcherPtr->trigger(myKeyEvent);
 
 	while (true)
 	{
 
 	}
 
+	std::function<void(int, bool)> tFunc1 = std::bind(&DoStuff, std::placeholders::_1, std::placeholders::_2);
+	std::function<void(char, std::string)> tFuncZ = std::bind(&DoOtherStuff, std::placeholders::_1, std::placeholders::_2);
+
+	std::function<void()> tFunc2 = std::bind(tFuncZ, 'Z', "Hello World!");
+
+	Silenda::ThreadPoolExecutor::GetInstance()->scheduleProcess(tFunc2);
+
+	//std::function<void()> tFunc2 = std::bind(reinterpret_cast<(*void)(int, bool)>, 1, false);
+
+	dispatcherPtr->trigger(myKeyEvent);
+
+	//dispatcherPtr->dispatch();
+
 	//std::function<void()>func = std::bind(&DoStuff, 2, false);
 
+	/*auto threadp = Silenda::ThreadPoolExecutor::GetInstance();
+	threadp->scheduleProcess(DoStuff, 3, true);
+	threadp->scheduleProcess(DoOtherStuff, 'p', "Hello World!");
+
+	while (true)
+	{
+
+	}
+
 	std::function<void()>testFunc = std::bind(&DoStuff, 2, false);
-	std::function<void()>otherFunc = std::bind(&DoOtherStuff, 'd', "Hello World!");
+	std::function<void()>otherFunc = std::bind(&DoOtherStuff, 'd', "Hello World!");*/
 
 	if (!Silenda::SilendaInit())
 	{
